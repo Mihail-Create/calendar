@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff1f2" />
+      <stop offset="100%" stop-color="#ffe4e6" />
+    </linearGradient>
+    <linearGradient id="petal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fda4af" />
+      <stop offset="100%" stop-color="#f43f5e" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#f43f5e" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bg)" />
+  <g filter="url(#shadow)">
+    <!-- Central lotus / bloom shape -->
+    <path d="M256 120 C230 180 180 250 180 310 C180 352 214 386 256 386 C298 386 332 352 332 310 C332 250 282 180 256 120 Z" fill="url(#petal)" />
+    <!-- Left petal -->
+    <path d="M246 220 C180 230 140 280 150 330 C155 355 175 375 200 375 C235 375 250 320 254 280 Z" fill="url(#glow)" opacity="0.85" />
+    <!-- Right petal -->
+    <path d="M266 220 C332 230 372 280 362 330 C357 355 337 375 312 375 C277 375 262 320 258 280 Z" fill="url(#glow)" opacity="0.85" />
+    <!-- Core sparkle / pearl -->
+    <circle cx="256" cy="300" r="16" fill="#ffffff" opacity="0.9" />
+  </g>
+</svg>

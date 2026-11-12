@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Безопасность 100%: доступ к данным разрешен ТОЛЬКО авторизованному пользователю с этим uid.
+    // Никакие другие пользователи или внешние запросы не смогут прочитать или изменить чужие записи.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
