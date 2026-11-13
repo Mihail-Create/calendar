@@ -99,7 +99,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
       <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl border border-blush-100 overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blush-50/50 to-white">
           <div className="flex items-center space-x-2">
@@ -188,7 +188,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </p>
                 <button
                   onClick={handleGoogleLogin}
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold flex items-center justify-center space-x-2 shadow-xs transition-colors"
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold flex items-center justify-center space-x-2 shadow-sm transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Войти через Google</span>
@@ -273,13 +273,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <button
                 type="button"
                 onClick={() => exportDataAsJSON(appData)}
-                className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-blush-200 hover:bg-blush-50 text-blush-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors shadow-xs"
+                className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-blush-200 hover:bg-blush-50 text-blush-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Скачать копию (.json)</span>
               </button>
 
-              <label className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shadow-xs">
+              <label className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shadow-sm">
                 <Upload className="w-3.5 h-3.5 text-slate-500" />
                 <span>Восстановить</span>
                 <input

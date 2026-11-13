@@ -49,7 +49,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
             >
               <div
                 className={`p-1.5 rounded-2xl transition-all ${
-                  isActive ? 'bg-blush-50 shadow-xs' : 'bg-transparent'
+                  isActive ? 'bg-blush-50 shadow-sm' : 'bg-transparent'
                 }`}
               >
                 {item.icon}

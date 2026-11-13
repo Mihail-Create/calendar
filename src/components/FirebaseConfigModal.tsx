@@ -24,29 +24,33 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({ onClos
   const [error, setError] = useState<string | null>(null);
 
   const handleParseJson = () => {
-    try {
-      setError(null);
-      let clean = rawJson.trim();
-      if (clean.includes('{') && clean.includes('}')) {
-        clean = clean.substring(clean.indexOf('{'), clean.lastIndexOf('}') + 1);
-      }
-      
-      clean = clean
-        .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":')
-        .replace(/'/g, '"')
-        .replace(/,\s*}/g, '}');
+    setError(null);
+    const extractField = (key: string): string => {
+      const match = rawJson.match(
+        new RegExp(`["']?${key}["']?\\s*:\\s*["']([^"']+)["']`)
+      );
+      return match ? match[1].trim() : '';
+    };
 
-      const parsed = JSON.parse(clean);
-      if (parsed.apiKey) setApiKey(parsed.apiKey);
-      if (parsed.authDomain) setAuthDomain(parsed.authDomain);
-      if (parsed.projectId) setProjectId(parsed.projectId);
-      if (parsed.storageBucket) setStorageBucket(parsed.storageBucket);
-      if (parsed.messagingSenderId) setMessagingSenderId(parsed.messagingSenderId);
-      if (parsed.appId) setAppId(parsed.appId);
-      setRawJson('');
-    } catch {
-      setError('Не удалось разобрать вставленный фрагмент. Проверьте формат или заполните поля вручную.');
+    const parsedApiKey = extractField('apiKey');
+    const parsedAuthDomain = extractField('authDomain');
+    const parsedProjectId = extractField('projectId');
+    const parsedStorageBucket = extractField('storageBucket');
+    const parsedMessagingSenderId = extractField('messagingSenderId');
+    const parsedAppId = extractField('appId');
+
+    if (!parsedApiKey && !parsedProjectId) {
+      setError('Не удалось найти apiKey или projectId. Проверьте вставленный текст или заполните поля вручную.');
+      return;
     }
+
+    if (parsedApiKey) setApiKey(parsedApiKey);
+    if (parsedAuthDomain) setAuthDomain(parsedAuthDomain);
+    if (parsedProjectId) setProjectId(parsedProjectId);
+    if (parsedStorageBucket) setStorageBucket(parsedStorageBucket);
+    if (parsedMessagingSenderId) setMessagingSenderId(parsedMessagingSenderId);
+    if (parsedAppId) setAppId(parsedAppId);
+    setRawJson('');
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -75,7 +79,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({ onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
       <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl border border-blush-100 overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-orange-50 via-blush-50 to-white">
           <div className="flex items-center space-x-2.5">

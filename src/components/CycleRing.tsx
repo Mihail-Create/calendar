@@ -17,6 +17,7 @@ export const CycleRing: React.FC<CycleRingProps> = ({
   onOpenCalendar
 }) => {
   const {
+    hasData,
     currentCycleDay,
     currentPhase,
     phaseTitle,
@@ -67,7 +68,9 @@ export const CycleRing: React.FC<CycleRingProps> = ({
     }
   }[currentPhase];
 
-  const progressPercent = Math.min(100, Math.round((currentCycleDay / (avgCycleLength || 28)) * 100));
+  const progressPercent = hasData
+    ? Math.min(100, Math.round((currentCycleDay / (avgCycleLength || 28)) * 100))
+    : 0;
   const radius = 100;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
@@ -114,15 +117,27 @@ export const CycleRing: React.FC<CycleRingProps> = ({
             {phaseTitle}
           </span>
 
-          <div className="flex items-baseline space-x-1">
-            <span className="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight">
-              {currentCycleDay}
-            </span>
-            <span className="text-sm font-semibold text-slate-400">день</span>
-          </div>
+          {hasData ? (
+            <div className="flex items-baseline space-x-1">
+              <span className="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight">
+                {currentCycleDay}
+              </span>
+              <span className="text-sm font-semibold text-slate-400">день</span>
+            </div>
+          ) : (
+            <div className="flex items-baseline space-x-1">
+              <span className="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight">
+                —
+              </span>
+            </div>
+          )}
 
           <div className="mt-1">
-            {isPeriodActive ? (
+            {!hasData ? (
+              <span className="text-xs font-medium text-slate-400">
+                Укажи начало цикла
+              </span>
+            ) : isPeriodActive ? (
               <span className="text-xs font-medium text-blush-600 flex items-center justify-center space-x-1">
                 <Droplet className="w-3.5 h-3.5 fill-blush-500 text-blush-500 animate-bounce" />
                 <span>Идут месячные</span>

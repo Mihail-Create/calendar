@@ -45,7 +45,7 @@ export const DailyCard: React.FC<DailyCardProps> = ({ currentPhase }) => {
 
         <button
           onClick={handleNextMessage}
-          className="group flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-white/90 border border-blush-200 text-xs text-blush-700 font-medium hover:bg-blush-100/60 transition-all active:scale-95 shadow-xs"
+          className="group flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-white/90 border border-blush-200 text-xs text-blush-700 font-medium hover:bg-blush-100/60 transition-all active:scale-95 shadow-sm"
           title="Получить другое предсказание"
         >
           <Sparkles className="w-3.5 h-3.5 text-blush-500 group-hover:rotate-12 transition-transform" />
@@ -53,12 +53,12 @@ export const DailyCard: React.FC<DailyCardProps> = ({ currentPhase }) => {
         </button>
       </div>
 
-      <div className="flex space-x-1 p-1 bg-white/80 backdrop-blur-xs rounded-xl border border-blush-100 mb-3 relative z-10">
+      <div className="flex space-x-1 p-1 bg-white/80 backdrop-blur-sm rounded-xl border border-blush-100 mb-3 relative z-10">
         <button
           onClick={() => setActiveTab('compliment')}
           className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
             activeTab === 'compliment'
-              ? 'bg-blush-500 text-white shadow-xs'
+              ? 'bg-blush-500 text-white shadow-sm'
               : 'text-slate-600 hover:text-blush-600'
           }`}
         >
@@ -70,7 +70,7 @@ export const DailyCard: React.FC<DailyCardProps> = ({ currentPhase }) => {
           onClick={() => setActiveTab('prediction')}
           className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
             activeTab === 'prediction'
-              ? 'bg-blush-500 text-white shadow-xs'
+              ? 'bg-blush-500 text-white shadow-sm'
               : 'text-slate-600 hover:text-blush-600'
           }`}
         >
@@ -82,7 +82,7 @@ export const DailyCard: React.FC<DailyCardProps> = ({ currentPhase }) => {
           onClick={() => setActiveTab('care')}
           className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
             activeTab === 'care'
-              ? 'bg-blush-500 text-white shadow-xs'
+              ? 'bg-blush-500 text-white shadow-sm'
               : 'text-slate-600 hover:text-blush-600'
           }`}
         >

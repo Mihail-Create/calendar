@@ -24,7 +24,8 @@ import {
   deleteCycle,
   saveDayLog,
   deleteDayLog,
-  saveSettings
+  saveSettings,
+  migrateGuestDataToCloud
 } from './lib/storage';
 import type { AppData } from './lib/storage';
 import {
@@ -62,6 +63,15 @@ export const App: React.FC = () => {
     return () => unsubAuth();
   }, []);
 
+  // Migrate guest data to cloud when user logs in
+  useEffect(() => {
+    if (user) {
+      migrateGuestDataToCloud(user.uid).catch((err) => {
+        console.warn('Migration error:', err);
+      });
+    }
+  }, [user]);
+
   // Subscribe to user data (Firestore or Guest fallback)
   useEffect(() => {
     const unsubData = subscribeToUserData(
@@ -94,12 +104,20 @@ export const App: React.FC = () => {
   );
   const latestCycle = sortedCycles[0];
 
-  const isTodayMarkedPeriod = Boolean(dayLogs[todayStr]?.isPeriod);
+  const daysSinceLastStart = latestCycle
+    ? differenceInDays(startOfDay(parseISO(todayStr)), startOfDay(parseISO(latestCycle.startDate)))
+    : -1;
+  const maxOngoingDays = Math.max((settings.averagePeriodLength || 5) + 3, 10);
   const isOngoingCycle = Boolean(
-    latestCycle && (!latestCycle.endDate || latestCycle.isOngoing)
+    latestCycle &&
+      latestCycle.isOngoing !== false &&
+      !latestCycle.endDate &&
+      daysSinceLastStart >= 0 &&
+      daysSinceLastStart < maxOngoingDays
   );
-
-  const isPeriodActive = isTodayMarkedPeriod || isOngoingCycle;
+  const isPeriodActive =
+    isOngoingCycle ||
+    (dayLogs[todayStr]?.isPeriod === true && latestCycle?.endDate !== todayStr);
 
   // Handler: Quick toggle period
   const handleTogglePeriod = async () => {
@@ -120,6 +138,19 @@ export const App: React.FC = () => {
           durationDays: Math.max(1, dur),
           isOngoing: false
         });
+
+        if (latestCycle.startDate === todayStr) {
+          await saveDayLog(userId, {
+            date: todayStr,
+            isPeriod: false,
+            flowIntensity: 'none',
+            symptoms: dayLogs[todayStr]?.symptoms || [],
+            moods: dayLogs[todayStr]?.moods || [],
+            sexActivity: dayLogs[todayStr]?.sexActivity || 'none',
+            notes: dayLogs[todayStr]?.notes || '',
+            updatedAt: Date.now()
+          });
+        }
       }
     } else {
       // Starting new period
@@ -212,7 +243,6 @@ export const App: React.FC = () => {
       {/* App Header */}
       <Header
         user={user}
-        isGuest={!user}
         onOpenSettings={() => setShowSettingsModal(true)}
       />
 
@@ -236,7 +266,7 @@ export const App: React.FC = () => {
             {/* Quick action: Today's symptom log shortcut */}
             <button
               onClick={() => setSelectedDateStr(todayStr)}
-              className="w-full py-3.5 px-4 rounded-2xl bg-white border border-blush-200/80 hover:border-blush-300 shadow-soft flex items-center justify-between text-left active:scale-98 transition-all"
+              className="w-full py-3.5 px-4 rounded-2xl bg-white border border-blush-200/80 hover:border-blush-300 shadow-soft flex items-center justify-between text-left active:scale-95 transition-all"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-xl">✍️</span>

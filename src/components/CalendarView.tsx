@@ -112,7 +112,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           let borderClass = 'border-transparent';
 
           if (isPeriod) {
-            bgClass = 'bg-gradient-to-tr from-blush-500 to-blush-600 text-white font-bold shadow-xs';
+            bgClass = 'bg-gradient-to-tr from-blush-500 to-blush-600 text-white font-bold shadow-sm';
           } else if (isPredictedPeriod) {
             bgClass = 'bg-blush-50 text-blush-700 font-medium border-dashed border border-blush-300';
           } else if (isOvulation) {
@@ -157,7 +157,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
       <div className="mt-5 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
         <div className="flex items-center space-x-2">
-          <span className="w-3.5 h-3.5 rounded-md bg-gradient-to-tr from-blush-500 to-blush-600 shadow-xs" />
+          <span className="w-3.5 h-3.5 rounded-md bg-gradient-to-tr from-blush-500 to-blush-600 shadow-sm" />
           <span>Месячные</span>
         </div>
         <div className="flex items-center space-x-2">

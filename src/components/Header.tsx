@@ -5,7 +5,6 @@ import type { User } from 'firebase/auth';
 interface HeaderProps {
   user: User | null;
   onOpenSettings: () => void;
-  isGuest: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({ user, onOpenSettings }) => {
@@ -31,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ user, onOpenSettings }) => {
         {/* Status & Profile / Settings trigger */}
         <button
           onClick={onOpenSettings}
-          className="flex items-center space-x-2 px-2.5 py-1.5 rounded-full bg-white border border-blush-200 shadow-xs hover:border-blush-300 transition-all active:scale-95"
+          className="flex items-center space-x-2 px-2.5 py-1.5 rounded-full bg-white border border-blush-200 shadow-sm hover:border-blush-300 transition-all active:scale-95"
           title="Открыть настройки"
         >
           {user ? (

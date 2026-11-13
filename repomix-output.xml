@@ -1,0 +1,3839 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/
+  workflows/
+    deploy.yml
+public/
+  favicon.svg
+  icons.svg
+  manifest.json
+src/
+  assets/
+    hero.png
+    react.svg
+    vite.svg
+  components/
+    AnalyticsView.tsx
+    BottomNav.tsx
+    CalendarView.tsx
+    CycleRing.tsx
+    DailyCard.tsx
+    DayLogModal.tsx
+    FirebaseConfigModal.tsx
+    FirebaseGuideModal.tsx
+    Header.tsx
+    SettingsModal.tsx
+  lib/
+    firebase.ts
+    storage.ts
+  types/
+    index.ts
+  utils/
+    affirmations.ts
+    cycleCalculations.ts
+  App.css
+  App.tsx
+  index.css
+  main.tsx
+.env.example
+.gitignore
+.oxlintrc.json
+firestore.rules
+index.html
+package.json
+postcss.config.js
+README.md
+tailwind.config.js
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/workflows/deploy.yml">
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</file>
+
+<file path="public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff1f2" />
+      <stop offset="100%" stop-color="#ffe4e6" />
+    </linearGradient>
+    <linearGradient id="petal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fda4af" />
+      <stop offset="100%" stop-color="#f43f5e" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#f43f5e" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bg)" />
+  <g filter="url(#shadow)">
+    <!-- Central lotus / bloom shape -->
+    <path d="M256 120 C230 180 180 250 180 310 C180 352 214 386 256 386 C298 386 332 352 332 310 C332 250 282 180 256 120 Z" fill="url(#petal)" />
+    <!-- Left petal -->
+    <path d="M246 220 C180 230 140 280 150 330 C155 355 175 375 200 375 C235 375 250 320 254 280 Z" fill="url(#glow)" opacity="0.85" />
+    <!-- Right petal -->
+    <path d="M266 220 C332 230 372 280 362 330 C357 355 337 375 312 375 C277 375 262 320 258 280 Z" fill="url(#glow)" opacity="0.85" />
+    <!-- Core sparkle / pearl -->
+    <circle cx="256" cy="300" r="16" fill="#ffffff" opacity="0.9" />
+  </g>
+</svg>
+</file>
+
+<file path="public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="public/manifest.json">
+{
+  "name": "Ева — Мой Календарь Цикла",
+  "short_name": "Ева Цикл",
+  "description": "Приватный и уютный женский календарь отслеживания цикла",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF5F6",
+  "theme_color": "#FFF5F6",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="src/components/AnalyticsView.tsx">
+import React, { useState } from 'react';
+import {
+  Calendar,
+  Clock,
+  Activity,
+  Plus,
+  Trash2,
+  CalendarRange,
+  Info
+} from 'lucide-react';
+import type { CycleStats, PeriodCycle } from '../types';
+import { formatReadableDate } from '../utils/cycleCalculations';
+
+interface AnalyticsViewProps {
+  cycles: PeriodCycle[];
+  stats: CycleStats;
+  onAddCycle: (startDate: string, endDate?: string) => Promise<void>;
+  onDeleteCycle: (cycleId: string) => Promise<void>;
+}
+
+export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
+  cycles,
+  stats,
+  onAddCycle,
+  onDeleteCycle
+}) => {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newStartDate, setNewStartDate] = useState(new Date().toISOString().slice(0, 10));
+  const [newEndDate, setNewEndDate] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const sortedCycles = [...cycles].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+
+  const handleCreateCycle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStartDate) return;
+
+    setIsSubmitting(true);
+    await onAddCycle(newStartDate, newEndDate || undefined);
+    setIsSubmitting(false);
+    setShowAddModal(false);
+    setNewEndDate('');
+  };
+
+  return (
+    <div className="space-y-4 max-w-md mx-auto">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-white rounded-3xl p-4 border border-blush-100 shadow-soft">
+          <div className="w-8 h-8 rounded-xl bg-blush-50 text-blush-600 flex items-center justify-center mb-2">
+            <Clock className="w-4 h-4" />
+          </div>
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+            Длина цикла
+          </span>
+          <div className="flex items-baseline space-x-1 mt-0.5">
+            <span className="text-2xl font-black text-slate-800">
+              {stats.avgCycleLength}
+            </span>
+            <span className="text-xs font-semibold text-slate-400">дней</span>
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">в среднем по истории</p>
+        </div>
+
+        <div className="bg-white rounded-3xl p-4 border border-blush-100 shadow-soft">
+          <div className="w-8 h-8 rounded-xl bg-peach-50 text-peach-600 flex items-center justify-center mb-2">
+            <Activity className="w-4 h-4" />
+          </div>
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+            Месячные
+          </span>
+          <div className="flex items-baseline space-x-1 mt-0.5">
+            <span className="text-2xl font-black text-slate-800">
+              {stats.avgPeriodLength}
+            </span>
+            <span className="text-xs font-semibold text-slate-400">дней</span>
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">длительность периода</p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-2">
+        <h3 className="text-base font-bold text-slate-800 flex items-center space-x-2">
+          <CalendarRange className="w-4 h-4 text-blush-500" />
+          <span>История циклов ({cycles.length})</span>
+        </h3>
+
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="text-xs font-semibold text-blush-600 bg-blush-50 hover:bg-blush-100 px-3 py-1.5 rounded-full flex items-center space-x-1 transition-all active:scale-95"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>Добавить</span>
+        </button>
+      </div>
+
+      {sortedCycles.length === 0 ? (
+        <div className="bg-white rounded-3xl p-6 text-center border border-blush-100 shadow-soft">
+          <div className="w-12 h-12 rounded-full bg-blush-50 text-blush-400 flex items-center justify-center mx-auto mb-3">
+            <Calendar className="w-6 h-6" />
+          </div>
+          <h4 className="text-sm font-bold text-slate-700 mb-1">Пока нет записей</h4>
+          <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto mb-4">
+            Отметь первый день цикла на главной или добавь прошедшие даты, чтобы включить умный прогноз.
+          </p>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="text-xs font-semibold px-4 py-2 rounded-xl bg-blush-500 text-white shadow-soft"
+          >
+            Добавить первый цикл
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {sortedCycles.map((cycle, idx) => {
+            return (
+              <div
+                key={cycle.id}
+                className="bg-white rounded-2xl p-4 border border-blush-100/80 shadow-xs flex items-center justify-between hover:border-blush-200 transition-all"
+              >
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-blush-500" />
+                    <span className="text-sm font-bold text-slate-800">
+                      {formatReadableDate(cycle.startDate, 'd MMMM yyyy')}
+                    </span>
+                    {idx === 0 && (
+                      <span className="text-[10px] bg-blush-100 text-blush-700 font-bold px-1.5 py-0.5 rounded-full">
+                        Текущий
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-3 text-xs text-slate-500 mt-1">
+                    {cycle.endDate ? (
+                      <span>до {formatReadableDate(cycle.endDate, 'd MMMM')}</span>
+                    ) : (
+                      <span className="text-blush-600 font-medium">Продолжается</span>
+                    )}
+                    {cycle.durationDays && (
+                      <span>• {cycle.durationDays} дн. выделений</span>
+                    )}
+                    {cycle.cycleLength && (
+                      <span>• Цикл {cycle.cycleLength} дн.</span>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (window.confirm('Удалить эту запись цикла?')) {
+                      onDeleteCycle(cycle.id);
+                    }
+                  }}
+                  className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
+                  title="Удалить цикл"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="bg-blush-50/70 rounded-2xl p-3.5 border border-blush-100 flex items-start space-x-2.5 text-xs text-slate-600 leading-relaxed">
+        <Info className="w-4 h-4 text-blush-500 shrink-0 mt-0.5" />
+        <div>
+          <strong className="font-semibold text-slate-700 block mb-0.5">О точности прогноза</strong>
+          Чем регулярнее вы отмечаете даты начала месячных, тем точнее календарь подстраивается под персональный ритм организма.
+        </div>
+      </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-blush-100">
+            <h3 className="text-base font-bold text-slate-800 mb-3">
+              Добавить цикл вручную
+            </h3>
+
+            <form onSubmit={handleCreateCycle} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Дата начала месячных *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={newStartDate}
+                  onChange={(e) => setNewStartDate(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blush-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Дата окончания (необязательно)
+                </label>
+                <input
+                  type="date"
+                  value={newEndDate}
+                  min={newStartDate}
+                  onChange={(e) => setNewEndDate(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blush-400"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 py-2.5 rounded-xl text-slate-600 bg-slate-100 hover:bg-slate-200 text-xs font-semibold transition-colors"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 rounded-xl text-white bg-blush-500 hover:bg-blush-600 text-xs font-semibold shadow-soft transition-colors"
+                >
+                  {isSubmitting ? 'Добавление...' : 'Сохранить'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/BottomNav.tsx">
+import React from 'react';
+import { Heart, Calendar, BarChart3, Settings } from 'lucide-react';
+
+export type NavTab = 'home' | 'calendar' | 'analytics' | 'settings';
+
+interface BottomNavProps {
+  activeTab: NavTab;
+  onChangeTab: (tab: NavTab) => void;
+}
+
+export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) => {
+  const items: { id: NavTab; label: string; icon: React.ReactNode }[] = [
+    {
+      id: 'home',
+      label: 'Главная',
+      icon: <Heart className="w-5 h-5" />
+    },
+    {
+      id: 'calendar',
+      label: 'Календарь',
+      icon: <Calendar className="w-5 h-5" />
+    },
+    {
+      id: 'analytics',
+      label: 'История',
+      icon: <BarChart3 className="w-5 h-5" />
+    },
+    {
+      id: 'settings',
+      label: 'Настройки',
+      icon: <Settings className="w-5 h-5" />
+    }
+  ];
+
+  return (
+    <nav className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-blush-100 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] pb-safe transition-all">
+      <div className="max-w-md mx-auto flex items-center justify-around px-2 py-1.5">
+        {items.map((item) => {
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => onChangeTab(item.id)}
+              className={`flex-1 py-1.5 flex flex-col items-center justify-center transition-all duration-200 relative ${
+                isActive
+                  ? 'text-blush-600 font-bold scale-105'
+                  : 'text-slate-400 hover:text-slate-600 font-medium'
+              }`}
+            >
+              <div
+                className={`p-1.5 rounded-2xl transition-all ${
+                  isActive ? 'bg-blush-50 shadow-xs' : 'bg-transparent'
+                }`}
+              >
+                {item.icon}
+              </div>
+              <span className="text-[10px] mt-0.5 tracking-tight">{item.label}</span>
+              {isActive && (
+                <span className="absolute bottom-0 w-5 h-1 rounded-full bg-blush-500 animate-fade-in" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+};
+</file>
+
+<file path="src/components/CalendarView.tsx">
+import React, { useState } from 'react';
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  isSameMonth,
+  isToday
+} from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { CycleStats, DayLog, PeriodCycle } from '../types';
+import { formatDateKey, getCalendarDayInfo } from '../utils/cycleCalculations';
+
+interface CalendarViewProps {
+  cycles: PeriodCycle[];
+  dayLogs: Record<string, DayLog>;
+  stats: CycleStats;
+  onSelectDate: (dateStr: string) => void;
+}
+
+export const CalendarView: React.FC<CalendarViewProps> = ({
+  cycles,
+  dayLogs,
+  stats,
+  onSelectDate
+}) => {
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+
+  const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+  const goToToday = () => setCurrentMonth(new Date());
+
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(monthStart);
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+
+  const calendarDays = eachDayOfInterval({
+    start: calendarStart,
+    end: calendarEnd
+  });
+
+  const weekDayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+  return (
+    <div className="bg-white rounded-3xl p-5 border border-blush-200/80 shadow-soft max-w-md mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg font-bold text-slate-800 capitalize">
+            {format(currentMonth, 'LLLL yyyy', { locale: ru })}
+          </h2>
+          <button
+            onClick={goToToday}
+            className="text-[11px] text-blush-600 font-semibold hover:underline"
+          >
+            Сегодня
+          </button>
+        </div>
+
+        <div className="flex items-center space-x-1.5">
+          <button
+            onClick={prevMonth}
+            className="p-2 rounded-xl bg-slate-50 hover:bg-blush-50 text-slate-600 hover:text-blush-600 transition-colors"
+            title="Предыдущий месяц"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={nextMonth}
+            className="p-2 rounded-xl bg-slate-50 hover:bg-blush-50 text-slate-600 hover:text-blush-600 transition-colors"
+            title="Следующий месяц"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center mb-2">
+        {weekDayNames.map((name, i) => (
+          <div
+            key={name}
+            className={`text-xs font-semibold py-1 ${
+              i >= 5 ? 'text-rosewood-400' : 'text-slate-400'
+            }`}
+          >
+            {name}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {calendarDays.map((day) => {
+          const dateKey = formatDateKey(day);
+          const isCurrentMonthDay = isSameMonth(day, currentMonth);
+          const isCurrentToday = isToday(day);
+
+          const {
+            isPeriod,
+            isPredictedPeriod,
+            isOvulation,
+            isFertile,
+            hasLog,
+            flowIntensity
+          } = getCalendarDayInfo(day, cycles, dayLogs, stats);
+
+          let bgClass = 'bg-transparent text-slate-700 hover:bg-blush-50/70';
+          let borderClass = 'border-transparent';
+
+          if (isPeriod) {
+            bgClass = 'bg-gradient-to-tr from-blush-500 to-blush-600 text-white font-bold shadow-xs';
+          } else if (isPredictedPeriod) {
+            bgClass = 'bg-blush-50 text-blush-700 font-medium border-dashed border border-blush-300';
+          } else if (isOvulation) {
+            bgClass = 'bg-lavender-100 text-lavender-900 font-bold border border-lavender-300';
+          } else if (isFertile) {
+            bgClass = 'bg-sage-50 text-emerald-800';
+          }
+
+          if (isCurrentToday && !isPeriod) {
+            borderClass = 'ring-2 ring-blush-400 ring-offset-1';
+          }
+
+          if (!isCurrentMonthDay) {
+            bgClass = 'bg-transparent text-slate-300 opacity-40';
+          }
+
+          return (
+            <button
+              key={dateKey}
+              onClick={() => onSelectDate(dateKey)}
+              className={`h-11 rounded-2xl flex flex-col items-center justify-center relative transition-all active:scale-95 ${bgClass} ${borderClass}`}
+            >
+              <span className="text-xs leading-none">
+                {format(day, 'd')}
+              </span>
+
+              <div className="flex items-center space-x-0.5 mt-1 h-1.5">
+                {isOvulation && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-lavender-500" />
+                )}
+                {hasLog && !isPeriod && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                )}
+                {isPeriod && flowIntensity && (
+                  <span className="w-1 h-1 rounded-full bg-white opacity-80" />
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+        <div className="flex items-center space-x-2">
+          <span className="w-3.5 h-3.5 rounded-md bg-gradient-to-tr from-blush-500 to-blush-600 shadow-xs" />
+          <span>Месячные</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="w-3.5 h-3.5 rounded-md bg-blush-50 border border-dashed border-blush-300" />
+          <span>Прогноз месячных</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="w-3.5 h-3.5 rounded-md bg-lavender-100 border border-lavender-300" />
+          <span>День овуляции</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="w-3.5 h-3.5 rounded-md bg-sage-50 border border-sage-200" />
+          <span>Окно фертильности</span>
+        </div>
+        <div className="flex items-center space-x-2 col-span-2">
+          <span className="w-2 h-2 rounded-full bg-amber-400" />
+          <span>Есть заметки или симптомы</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/CycleRing.tsx">
+import React from 'react';
+import { Droplet, Calendar } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import type { CycleStats } from '../types';
+
+interface CycleRingProps {
+  stats: CycleStats;
+  isPeriodActive: boolean;
+  onTogglePeriod: () => void;
+  onOpenCalendar: () => void;
+}
+
+export const CycleRing: React.FC<CycleRingProps> = ({
+  stats,
+  isPeriodActive,
+  onTogglePeriod,
+  onOpenCalendar
+}) => {
+  const {
+    currentCycleDay,
+    currentPhase,
+    phaseTitle,
+    phaseDescription,
+    daysUntilNextPeriod,
+    isDelay,
+    delayDays,
+    pregnancyChance,
+    avgCycleLength
+  } = stats;
+
+  const handlePeriodAction = () => {
+    if (!isPeriodActive) {
+      confetti({
+        particleCount: 30,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#f43f5e', '#fda4af', '#fecdd3']
+      });
+    }
+    onTogglePeriod();
+  };
+
+  const phaseColors = {
+    menstrual: {
+      ring: 'from-blush-400 to-blush-600',
+      badgeBg: 'bg-blush-100 text-blush-700 border-blush-200',
+      heroAccent: 'text-blush-600',
+      glow: 'shadow-[0_0_40px_rgba(244,67,105,0.18)]'
+    },
+    follicular: {
+      ring: 'from-peach-300 to-peach-500',
+      badgeBg: 'bg-peach-100 text-peach-700 border-peach-200',
+      heroAccent: 'text-peach-600',
+      glow: 'shadow-[0_0_40px_rgba(255,155,109,0.18)]'
+    },
+    ovulation: {
+      ring: 'from-lavender-400 to-blush-400',
+      badgeBg: 'bg-lavender-100 text-lavender-700 border-lavender-200',
+      heroAccent: 'text-lavender-600',
+      glow: 'shadow-[0_0_40px_rgba(189,150,225,0.22)]'
+    },
+    luteal: {
+      ring: 'from-rosewood-300 to-blush-400',
+      badgeBg: 'bg-rosewood-100 text-rosewood-700 border-rosewood-200',
+      heroAccent: 'text-rosewood-600',
+      glow: 'shadow-[0_0_40px_rgba(197,132,118,0.18)]'
+    }
+  }[currentPhase];
+
+  const progressPercent = Math.min(100, Math.round((currentCycleDay / (avgCycleLength || 28)) * 100));
+  const radius = 100;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center my-4">
+        <div className={`absolute inset-4 rounded-full bg-white ${phaseColors.glow} border border-blush-100/60 transition-all duration-700`} />
+
+        <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 240 240">
+          <circle
+            cx="120"
+            cy="120"
+            r={radius}
+            stroke="#fce7ea"
+            strokeWidth="10"
+            fill="transparent"
+            strokeLinecap="round"
+          />
+          <circle
+            cx="120"
+            cy="120"
+            r={radius}
+            stroke="url(#gradient)"
+            strokeWidth="10"
+            fill="transparent"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            className="transition-all duration-1000 ease-out"
+          />
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ff7e95" />
+              <stop offset="100%" stopColor="#f44369" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center select-none">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border mb-1.5 transition-colors ${phaseColors.badgeBg}`}
+          >
+            {phaseTitle}
+          </span>
+
+          <div className="flex items-baseline space-x-1">
+            <span className="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight">
+              {currentCycleDay}
+            </span>
+            <span className="text-sm font-semibold text-slate-400">день</span>
+          </div>
+
+          <div className="mt-1">
+            {isPeriodActive ? (
+              <span className="text-xs font-medium text-blush-600 flex items-center justify-center space-x-1">
+                <Droplet className="w-3.5 h-3.5 fill-blush-500 text-blush-500 animate-bounce" />
+                <span>Идут месячные</span>
+              </span>
+            ) : isDelay ? (
+              <span className="text-xs font-semibold text-amber-600">
+                Задержка {delayDays} {delayDays === 1 ? 'день' : delayDays < 5 ? 'дня' : 'дней'}
+              </span>
+            ) : daysUntilNextPeriod === 0 ? (
+              <span className="text-xs font-semibold text-blush-600">Ожидаются сегодня</span>
+            ) : (
+              <span className="text-xs font-medium text-slate-500">
+                До месячных: <strong className="text-slate-700 font-semibold">{daysUntilNextPeriod} дн.</strong>
+              </span>
+            )}
+          </div>
+
+          <div className="mt-2 text-[11px] px-2.5 py-0.5 rounded-full bg-slate-50 border border-slate-200/60 text-slate-500 font-medium">
+            Шанс зачатия:{' '}
+            <span
+              className={
+                pregnancyChance === 'Пик овуляции' || pregnancyChance === 'Высокая'
+                  ? 'text-blush-600 font-bold'
+                  : 'text-slate-700'
+              }
+            >
+              {pregnancyChance}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-center text-xs sm:text-sm text-slate-500 max-w-xs mb-5 px-4 leading-relaxed">
+        {phaseDescription}
+      </p>
+
+      <div className="w-full max-w-sm flex items-center space-x-2.5 px-4">
+        <button
+          onClick={handlePeriodAction}
+          className={`flex-1 py-3.5 px-4 rounded-2xl font-semibold text-sm flex items-center justify-center space-x-2 shadow-soft transition-all active:scale-95 ${
+            isPeriodActive
+              ? 'bg-white border-2 border-blush-400 text-blush-600 hover:bg-blush-50'
+              : 'bg-gradient-to-r from-blush-500 to-blush-600 text-white hover:brightness-105'
+          }`}
+        >
+          <Droplet
+            className={`w-4 h-4 ${isPeriodActive ? 'fill-blush-500' : 'fill-white'}`}
+          />
+          <span>{isPeriodActive ? 'Завершить месячные' : 'Отметить месячные'}</span>
+        </button>
+
+        <button
+          onClick={onOpenCalendar}
+          className="p-3.5 rounded-2xl bg-white border border-blush-200 text-slate-700 shadow-soft hover:bg-blush-50/50 transition-all active:scale-95"
+          title="Открыть календарь"
+        >
+          <Calendar className="w-5 h-5 text-blush-600" />
+        </button>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/DailyCard.tsx">
+import React, { useState } from 'react';
+import { Sparkles, Heart, Compass, Smile } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { getDailyAffirmation, PHASE_SPECIFIC_TIPS } from '../utils/affirmations';
+import type { CyclePhase } from '../types';
+
+interface DailyCardProps {
+  currentPhase: CyclePhase;
+}
+
+export const DailyCard: React.FC<DailyCardProps> = ({ currentPhase }) => {
+  const [seedOffset, setSeedOffset] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<'compliment' | 'prediction' | 'care'>('compliment');
+
+  const message = getDailyAffirmation(undefined, seedOffset);
+  const phaseTip = PHASE_SPECIFIC_TIPS[currentPhase];
+
+  const handleNextMessage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSeedOffset((prev) => prev + 1);
+
+    confetti({
+      particleCount: 25,
+      spread: 60,
+      origin: { y: 0.3 },
+      colors: ['#ff7e95', '#ffd6dc', '#ffc1a1', '#d7beed'],
+      ticks: 120,
+      gravity: 0.8,
+      scalar: 0.8
+    });
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-white via-blush-50/70 to-peach-50/50 rounded-3xl p-5 border border-blush-200/80 shadow-soft relative overflow-hidden transition-all duration-300">
+      <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-blush-200/40 blur-2xl pointer-events-none" />
+      <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full bg-peach-200/30 blur-2xl pointer-events-none" />
+
+      <div className="flex items-center justify-between mb-3.5 relative z-10">
+        <div className="flex items-center space-x-2">
+          <span className="text-lg">{message.icon}</span>
+          <span className="text-xs font-semibold tracking-wider uppercase text-blush-600">
+            Послание дня
+          </span>
+        </div>
+
+        <button
+          onClick={handleNextMessage}
+          className="group flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-white/90 border border-blush-200 text-xs text-blush-700 font-medium hover:bg-blush-100/60 transition-all active:scale-95 shadow-xs"
+          title="Получить другое предсказание"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-blush-500 group-hover:rotate-12 transition-transform" />
+          <span>Ещё</span>
+        </button>
+      </div>
+
+      <div className="flex space-x-1 p-1 bg-white/80 backdrop-blur-xs rounded-xl border border-blush-100 mb-3 relative z-10">
+        <button
+          onClick={() => setActiveTab('compliment')}
+          className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            activeTab === 'compliment'
+              ? 'bg-blush-500 text-white shadow-xs'
+              : 'text-slate-600 hover:text-blush-600'
+          }`}
+        >
+          <Heart className="w-3 h-3" />
+          <span>Комплимент</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('prediction')}
+          className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            activeTab === 'prediction'
+              ? 'bg-blush-500 text-white shadow-xs'
+              : 'text-slate-600 hover:text-blush-600'
+          }`}
+        >
+          <Compass className="w-3 h-3" />
+          <span>Предсказание</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('care')}
+          className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            activeTab === 'care'
+              ? 'bg-blush-500 text-white shadow-xs'
+              : 'text-slate-600 hover:text-blush-600'
+          }`}
+        >
+          <Smile className="w-3 h-3" />
+          <span>Забота</span>
+        </button>
+      </div>
+
+      <div className="relative z-10 min-h-[72px] flex items-center">
+        {activeTab === 'compliment' && (
+          <p className="text-slate-700 text-sm sm:text-base font-normal leading-relaxed italic animate-fade-in">
+            «{message.compliment}»
+          </p>
+        )}
+
+        {activeTab === 'prediction' && (
+          <div className="space-y-1 animate-fade-in">
+            <p className="text-slate-700 text-sm sm:text-base font-normal leading-relaxed">
+              ✨ {message.prediction}
+            </p>
+          </div>
+        )}
+
+        {activeTab === 'care' && (
+          <div className="space-y-1 animate-fade-in">
+            <div className="flex items-center space-x-1.5 text-xs font-semibold text-rosewood-700">
+              <span>{phaseTip.icon}</span>
+              <span>{phaseTip.title}</span>
+            </div>
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              {phaseTip.hint}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/DayLogModal.tsx">
+import React, { useState, useEffect } from 'react';
+import { X, Droplet, Trash2, Check } from 'lucide-react';
+import type { DayLog, FlowIntensity, MoodType, SexActivity, SymptomType } from '../types';
+import { formatReadableDate } from '../utils/cycleCalculations';
+
+interface DayLogModalProps {
+  dateStr: string | null;
+  initialLog?: DayLog;
+  onClose: () => void;
+  onSave: (log: DayLog) => Promise<void>;
+  onDelete: (dateStr: string) => Promise<void>;
+}
+
+const SYMPTOM_OPTIONS: { id: SymptomType; label: string; icon: string }[] = [
+  { id: 'cramps', label: 'Спазмы', icon: '⚡' },
+  { id: 'headache', label: 'Головная боль', icon: '🤕' },
+  { id: 'tender_breasts', label: 'Грудь', icon: '🍈' },
+  { id: 'bloating', label: 'Вздутие', icon: '🎈' },
+  { id: 'fatigue', label: 'Усталость', icon: '😴' },
+  { id: 'backache', label: 'Поясница', icon: '🧘‍♀️' },
+  { id: 'acne', label: 'Высыпания', icon: '✨' },
+  { id: 'cravings', label: 'Тяга к сладкому', icon: '🍫' },
+  { id: 'nausea', label: 'Тошнота', icon: '🤢' },
+  { id: 'insomnia', label: 'Бессонница', icon: '🌙' },
+];
+
+const MOOD_OPTIONS: { id: MoodType; label: string; icon: string }[] = [
+  { id: 'happy', label: 'Радостное', icon: '🥰' },
+  { id: 'calm', label: 'Спокойное', icon: '😌' },
+  { id: 'energetic', label: 'Энергичное', icon: '⚡' },
+  { id: 'romantic', label: 'Романтичное', icon: '💖' },
+  { id: 'sensitive', label: 'Ранимое', icon: '🥺' },
+  { id: 'irritated', label: 'Раздраженное', icon: '😤' },
+  { id: 'anxious', label: 'Тревожное', icon: '😰' },
+  { id: 'sad', label: 'Грустное', icon: '🌧️' },
+];
+
+const FLOW_OPTIONS: { id: FlowIntensity; label: string; drops: number }[] = [
+  { id: 'none', label: 'Нет', drops: 0 },
+  { id: 'spotting', label: 'Мажущие', drops: 1 },
+  { id: 'light', label: 'Легкие', drops: 2 },
+  { id: 'medium', label: 'Средние', drops: 3 },
+  { id: 'heavy', label: 'Обильные', drops: 4 },
+];
+
+const SEX_OPTIONS: { id: SexActivity; label: string; icon: string }[] = [
+  { id: 'none', label: 'Не было', icon: '✕' },
+  { id: 'protected', label: 'С защитой', icon: '🛡️' },
+  { id: 'unprotected', label: 'Без защиты', icon: '❤️' },
+  { id: 'high_libido', label: 'Высокое либидо', icon: '🔥' },
+];
+
+export const DayLogModal: React.FC<DayLogModalProps> = ({
+  dateStr,
+  initialLog,
+  onClose,
+  onSave,
+  onDelete
+}) => {
+  if (!dateStr) return null;
+
+  const [isPeriod, setIsPeriod] = useState<boolean>(initialLog?.isPeriod || false);
+  const [flow, setFlow] = useState<FlowIntensity>(initialLog?.flowIntensity || 'none');
+  const [symptoms, setSymptoms] = useState<SymptomType[]>(initialLog?.symptoms || []);
+  const [moods, setMoods] = useState<MoodType[]>(initialLog?.moods || []);
+  const [sex, setSex] = useState<SexActivity>(initialLog?.sexActivity || 'none');
+  const [notes, setNotes] = useState<string>(initialLog?.notes || '');
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setIsPeriod(initialLog?.isPeriod || false);
+    setFlow(initialLog?.flowIntensity || (initialLog?.isPeriod ? 'medium' : 'none'));
+    setSymptoms(initialLog?.symptoms || []);
+    setMoods(initialLog?.moods || []);
+    setSex(initialLog?.sexActivity || 'none');
+    setNotes(initialLog?.notes || '');
+  }, [initialLog, dateStr]);
+
+  const toggleSymptom = (sym: SymptomType) => {
+    setSymptoms((prev) =>
+      prev.includes(sym) ? prev.filter((s) => s !== sym) : [...prev, sym]
+    );
+  };
+
+  const toggleMood = (m: MoodType) => {
+    setMoods((prev) =>
+      prev.includes(m) ? prev.filter((item) => item !== m) : [...prev, m]
+    );
+  };
+
+  const handleFlowSelect = (selected: FlowIntensity) => {
+    setFlow(selected);
+    if (selected === 'none') {
+      setIsPeriod(false);
+    } else {
+      setIsPeriod(true);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    const newLog: DayLog = {
+      date: dateStr,
+      isPeriod: isPeriod || flow !== 'none',
+      flowIntensity: flow,
+      symptoms,
+      moods,
+      sexActivity: sex,
+      notes: notes.trim(),
+      updatedAt: Date.now()
+    };
+
+    await onSave(newLog);
+    setIsSaving(false);
+    onClose();
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Очистить запись за этот день?')) {
+      setIsSaving(true);
+      await onDelete(dateStr);
+      setIsSaving(false);
+      onClose();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in">
+      <div className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-blush-100">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blush-50/50 to-white">
+          <div>
+            <span className="text-[11px] font-semibold tracking-wider uppercase text-blush-600">
+              Запись за день
+            </span>
+            <h3 className="text-base sm:text-lg font-bold text-slate-800 capitalize">
+              {formatReadableDate(dateStr, 'EEEE, d MMMM')}
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5">
+          <div className="bg-blush-50/50 rounded-2xl p-3.5 border border-blush-100">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+                <Droplet className="w-4 h-4 text-blush-500 fill-blush-500" />
+                <span>Выделения / Месячные</span>
+              </span>
+            </div>
+            <div className="grid grid-cols-5 gap-1.5">
+              {FLOW_OPTIONS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleFlowSelect(item.id)}
+                  className={`py-2 px-1 rounded-xl text-xs font-medium flex flex-col items-center justify-center transition-all ${
+                    flow === item.id
+                      ? 'bg-blush-500 text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200/80 hover:border-blush-300'
+                  }`}
+                >
+                  <span className="text-[10px] opacity-80 mb-0.5">
+                    {item.drops === 0 ? '✕' : '💧'.repeat(item.drops)}
+                  </span>
+                  <span className="text-[11px]">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-2">
+              Самочувствие и симптомы
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {SYMPTOM_OPTIONS.map((sym) => {
+                const active = symptoms.includes(sym.id);
+                return (
+                  <button
+                    key={sym.id}
+                    type="button"
+                    onClick={() => toggleSymptom(sym.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
+                      active
+                        ? 'bg-blush-500 text-white shadow-xs'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-blush-50'
+                    }`}
+                  >
+                    <span>{sym.icon}</span>
+                    <span>{sym.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-2">
+              Настроение
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {MOOD_OPTIONS.map((m) => {
+                const active = moods.includes(m.id);
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => toggleMood(m.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
+                      active
+                        ? 'bg-peach-500 text-white shadow-xs'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-peach-50'
+                    }`}
+                  >
+                    <span>{m.icon}</span>
+                    <span>{m.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-2">
+              Сексуальная активность
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              {SEX_OPTIONS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSex(item.id)}
+                  className={`py-2 px-2 rounded-xl text-xs font-medium flex items-center justify-center space-x-1.5 transition-all ${
+                    sex === item.id
+                      ? 'bg-rosewood-600 text-white shadow-xs'
+                      : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-rosewood-50'
+                  }`}
+                >
+                  <span>{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-2">
+              Заметки или мысли
+            </label>
+            <textarea
+              rows={3}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Как прошел день, выпила витамины, тренировка..."
+              className="w-full p-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blush-400 focus:border-transparent placeholder:text-slate-400 resize-none bg-slate-50/50"
+            />
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-slate-100 flex items-center space-x-2.5 pb-safe bg-slate-50/60">
+          {initialLog && (
+            <button
+              onClick={handleDelete}
+              disabled={isSaving}
+              className="p-3 rounded-2xl text-rose-500 hover:bg-rose-50 border border-rose-200 transition-colors"
+              title="Удалить запись"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          )}
+
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-blush-500 to-blush-600 text-white font-semibold text-sm shadow-soft hover:brightness-105 active:scale-98 transition-all flex items-center justify-center space-x-2"
+          >
+            <Check className="w-4 h-4" />
+            <span>{isSaving ? 'Сохранение...' : 'Сохранить'}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/FirebaseConfigModal.tsx">
+import React, { useState } from 'react';
+import { X, Save, Trash2, Key } from 'lucide-react';
+import type { FirebaseConfigType } from '../lib/firebase';
+import {
+  getStoredFirebaseConfig,
+  saveStoredFirebaseConfig,
+  removeStoredFirebaseConfig
+} from '../lib/firebase';
+
+interface FirebaseConfigModalProps {
+  onClose: () => void;
+}
+
+export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({ onClose }) => {
+  const currentConfig = getStoredFirebaseConfig();
+
+  const [apiKey, setApiKey] = useState(currentConfig?.apiKey || '');
+  const [authDomain, setAuthDomain] = useState(currentConfig?.authDomain || '');
+  const [projectId, setProjectId] = useState(currentConfig?.projectId || '');
+  const [storageBucket, setStorageBucket] = useState(currentConfig?.storageBucket || '');
+  const [messagingSenderId, setMessagingSenderId] = useState(currentConfig?.messagingSenderId || '');
+  const [appId, setAppId] = useState(currentConfig?.appId || '');
+  const [rawJson, setRawJson] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleParseJson = () => {
+    try {
+      setError(null);
+      let clean = rawJson.trim();
+      if (clean.includes('{') && clean.includes('}')) {
+        clean = clean.substring(clean.indexOf('{'), clean.lastIndexOf('}') + 1);
+      }
+      
+      clean = clean
+        .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":')
+        .replace(/'/g, '"')
+        .replace(/,\s*}/g, '}');
+
+      const parsed = JSON.parse(clean);
+      if (parsed.apiKey) setApiKey(parsed.apiKey);
+      if (parsed.authDomain) setAuthDomain(parsed.authDomain);
+      if (parsed.projectId) setProjectId(parsed.projectId);
+      if (parsed.storageBucket) setStorageBucket(parsed.storageBucket);
+      if (parsed.messagingSenderId) setMessagingSenderId(parsed.messagingSenderId);
+      if (parsed.appId) setAppId(parsed.appId);
+      setRawJson('');
+    } catch {
+      setError('Не удалось разобрать вставленный фрагмент. Проверьте формат или заполните поля вручную.');
+    }
+  };
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!apiKey.trim() || !projectId.trim()) {
+      setError('Пожалуйста, заполните как минимум API Key и Project ID');
+      return;
+    }
+
+    const newConfig: FirebaseConfigType = {
+      apiKey: apiKey.trim(),
+      authDomain: authDomain.trim() || `${projectId.trim()}.firebaseapp.com`,
+      projectId: projectId.trim(),
+      storageBucket: storageBucket.trim() || `${projectId.trim()}.appspot.com`,
+      messagingSenderId: messagingSenderId.trim(),
+      appId: appId.trim()
+    };
+
+    saveStoredFirebaseConfig(newConfig);
+  };
+
+  const handleReset = () => {
+    if (window.confirm('Сбросить текущие ключи Firebase?')) {
+      removeStoredFirebaseConfig();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl border border-blush-100 overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-orange-50 via-blush-50 to-white">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+              <Key className="w-4 h-4 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-800">
+                Подключение Firebase
+              </h3>
+              <p className="text-[11px] text-slate-500">Ключи вашего проекта Google</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSave} className="p-4 sm:p-6 overflow-y-auto space-y-4">
+          {error && (
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
+              {error}
+            </div>
+          )}
+
+          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Быстрая вставка объекта firebaseConfig
+            </label>
+            <textarea
+              rows={2}
+              value={rawJson}
+              onChange={(e) => setRawJson(e.target.value)}
+              placeholder="const firebaseConfig = { apiKey: '...', projectId: '...' };"
+              className="w-full p-2 text-xs font-mono rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-blush-400"
+            />
+            {rawJson.trim() && (
+              <button
+                type="button"
+                onClick={handleParseJson}
+                className="mt-2 text-xs font-semibold text-blush-600 hover:text-blush-700 underline"
+              >
+                Разобрать и заполнить поля ↓
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">API Key *</label>
+              <input
+                type="text"
+                required
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="AIzaSy..."
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blush-400"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Project ID *</label>
+              <input
+                type="text"
+                required
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+                placeholder="eva-calendar-12345"
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blush-400"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Auth Domain</label>
+              <input
+                type="text"
+                value={authDomain}
+                onChange={(e) => setAuthDomain(e.target.value)}
+                placeholder="eva-calendar-12345.firebaseapp.com"
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blush-400"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">App ID</label>
+              <input
+                type="text"
+                value={appId}
+                onChange={(e) => setAppId(e.target.value)}
+                placeholder="1:123456789:web:abcdef"
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blush-400"
+              />
+            </div>
+          </div>
+
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            💡 Ключи сохраняются в защищенном хранилище приложения на вашем устройстве.
+          </p>
+
+          <div className="pt-2 flex items-center space-x-2">
+            {currentConfig && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="p-3 text-rose-500 hover:bg-rose-50 border border-rose-200 rounded-xl transition-colors"
+                title="Сбросить ключи"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+
+            <button
+              type="submit"
+              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-blush-500 to-blush-600 text-white font-semibold text-xs shadow-soft hover:brightness-105 transition-all flex items-center justify-center space-x-2"
+            >
+              <Save className="w-4 h-4" />
+              <span>Сохранить и подключиться</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/FirebaseGuideModal.tsx">
+import React, { useState } from 'react';
+import { X, Check, Copy, ExternalLink, Flame } from 'lucide-react';
+
+interface FirebaseGuideModalProps {
+  onClose: () => void;
+}
+
+export const FIRESTORE_SECURITY_RULES = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Полная защита данных: доступ разрешен ТОЛЬКО владельцу учетной записи
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}`;
+
+export const FirebaseGuideModal: React.FC<FirebaseGuideModalProps> = ({ onClose }) => {
+  const [copiedRules, setCopiedRules] = useState(false);
+
+  const handleCopyRules = () => {
+    navigator.clipboard.writeText(FIRESTORE_SECURITY_RULES);
+    setCopiedRules(true);
+    setTimeout(() => setCopiedRules(false), 2000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl border border-blush-100 overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-orange-50 via-blush-50 to-white">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+              <Flame className="w-5 h-5 fill-orange-500 text-orange-500" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-800">
+                Пошаговый гайд по Firebase
+              </h3>
+              <p className="text-[11px] text-slate-500">Бесплатное и вечное хранение данных</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-6 text-xs text-slate-700 leading-relaxed">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+              <span className="w-5 h-5 rounded-full bg-blush-500 text-white flex items-center justify-center text-xs">
+                1
+              </span>
+              <span>Создайте проект в Firebase Console</span>
+            </div>
+            <p className="pl-7 text-slate-600">
+              Перейдите на{' '}
+              <a
+                href="https://console.firebase.google.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blush-600 font-semibold underline inline-flex items-center space-x-1"
+              >
+                <span>console.firebase.google.com</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              , нажмите <strong>«Add project»</strong> (Добавить проект), введите имя (например, <code>eva-calendar</code>) и завершите создание (Google Analytics можно отключить).
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+              <span className="w-5 h-5 rounded-full bg-blush-500 text-white flex items-center justify-center text-xs">
+                2
+              </span>
+              <span>Включите вход через Google (Authentication)</span>
+            </div>
+            <p className="pl-7 text-slate-600">
+              В меню слева выберите <strong>Build → Authentication</strong> → <strong>Get Started</strong>. Во вкладке <strong>Sign-in method</strong> выберите <strong>Google</strong>, нажмите <strong>Enable</strong>, укажите свой email поддержки и нажмите <strong>Save</strong>.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+              <span className="w-5 h-5 rounded-full bg-blush-500 text-white flex items-center justify-center text-xs">
+                3
+              </span>
+              <span>Создайте базу Cloud Firestore</span>
+            </div>
+            <p className="pl-7 text-slate-600">
+              В меню слева выберите <strong>Build → Firestore Database</strong> → <strong>Create database</strong>. Выберите ближайший регион (например, <code>europe-west</code> или <code>us-central</code>) и нажмите <strong>Create</strong>.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+              <span className="w-5 h-5 rounded-full bg-blush-500 text-white flex items-center justify-center text-xs">
+                4
+              </span>
+              <span>Настройте строгую защиту данных (Rules)</span>
+            </div>
+            <p className="pl-7 text-slate-600">
+              В Firestore откройте вкладку <strong>Rules</strong> (Правила), сотрите всё что там есть и вставьте следующий код (он гарантирует, что <strong>только ваша жена</strong> видит свои записи):
+            </p>
+
+            <div className="ml-7 relative bg-slate-900 text-slate-200 p-3 rounded-2xl font-mono text-[11px] overflow-x-auto border border-slate-800">
+              <button
+                onClick={handleCopyRules}
+                className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-sans text-[10px] flex items-center space-x-1 transition-all"
+              >
+                {copiedRules ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                <span>{copiedRules ? 'Скопировано!' : 'Копировать'}</span>
+              </button>
+              <pre className="pr-16">{FIRESTORE_SECURITY_RULES}</pre>
+            </div>
+            <p className="pl-7 text-slate-500 text-[11px]">Нажмите кнопку <strong>Publish</strong>.</p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+              <span className="w-5 h-5 rounded-full bg-blush-500 text-white flex items-center justify-center text-xs">
+                5
+              </span>
+              <span>Скопируйте ключи Web App</span>
+            </div>
+            <p className="pl-7 text-slate-600">
+              Нажмите на шестерёнку вверху ⚙️ <strong>Project settings</strong> → прокрутите вниз до <strong>Your apps</strong> → выберите иконку веб <strong>&lt;/&gt;</strong> (Web) → зарегистрируйте приложение (например, <code>Eva Web</code>). Скопируйте объект <code>firebaseConfig</code> и вставьте в настройках приложения или в файл <code>.env</code>.
+            </p>
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-slate-100 flex justify-end bg-slate-50">
+          <button
+            onClick={onClose}
+            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold shadow-soft"
+          >
+            Понятно
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/Header.tsx">
+import React from 'react';
+import { Cloud, CloudOff, Heart } from 'lucide-react';
+import type { User } from 'firebase/auth';
+
+interface HeaderProps {
+  user: User | null;
+  onOpenSettings: () => void;
+  isGuest: boolean;
+}
+
+export const Header: React.FC<HeaderProps> = ({ user, onOpenSettings }) => {
+  return (
+    <header className="sticky top-0 z-30 bg-[#FAF5F5]/90 backdrop-blur-md border-b border-blush-100 px-4 py-3 pt-safe transition-all">
+      <div className="max-w-md mx-auto flex items-center justify-between">
+        {/* Logo & Brand */}
+        <div className="flex items-center space-x-2.5">
+          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blush-400 to-blush-600 flex items-center justify-center shadow-sm text-white">
+            <Heart className="w-5 h-5 fill-white/30" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-1.5">
+              <span className="font-bold text-lg text-slate-800 tracking-tight">Ева</span>
+              <span className="text-[10px] font-medium tracking-wide uppercase px-1.5 py-0.5 rounded-full bg-blush-100 text-blush-700">
+                Мой ритм
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium">Календарь твоего цикла</p>
+          </div>
+        </div>
+
+        {/* Status & Profile / Settings trigger */}
+        <button
+          onClick={onOpenSettings}
+          className="flex items-center space-x-2 px-2.5 py-1.5 rounded-full bg-white border border-blush-200 shadow-xs hover:border-blush-300 transition-all active:scale-95"
+          title="Открыть настройки"
+        >
+          {user ? (
+            <>
+              <div className="relative">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'Пользователь'}
+                    className="w-6 h-6 rounded-full object-cover border border-blush-200"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-blush-100 text-blush-600 font-semibold text-xs flex items-center justify-center">
+                    {(user.displayName || user.email || 'Я')[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
+              </div>
+              <Cloud className="w-3.5 h-3.5 text-emerald-600" />
+            </>
+          ) : (
+            <>
+              <div className="w-6 h-6 rounded-full bg-rosewood-100 text-rosewood-600 flex items-center justify-center">
+                <CloudOff className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs font-medium text-slate-600">Гость</span>
+            </>
+          )}
+        </button>
+      </div>
+    </header>
+  );
+};
+</file>
+
+<file path="src/components/SettingsModal.tsx">
+import React, { useState } from 'react';
+import {
+  X,
+  User as UserIcon,
+  LogIn,
+  LogOut,
+  Download,
+  Upload,
+  Sliders,
+  ShieldCheck,
+  Flame,
+  Key,
+  CheckCircle2,
+  AlertCircle
+} from 'lucide-react';
+import type { User } from 'firebase/auth';
+import type { UserSettings } from '../types';
+import type { AppData } from '../lib/storage';
+import { exportDataAsJSON, importDataFromJSON } from '../lib/storage';
+import { loginWithGoogle, logoutUser, isFirebaseConfigured } from '../lib/firebase';
+
+interface SettingsModalProps {
+  user: User | null;
+  settings: UserSettings;
+  appData: AppData;
+  onUpdateSettings: (newSettings: UserSettings) => Promise<void>;
+  onClose: () => void;
+  onOpenFirebaseGuide: () => void;
+  onOpenFirebaseConfig: () => void;
+}
+
+export const SettingsModal: React.FC<SettingsModalProps> = ({
+  user,
+  settings,
+  appData,
+  onUpdateSettings,
+  onClose,
+  onOpenFirebaseGuide,
+  onOpenFirebaseConfig
+}) => {
+  const [cycleLength, setCycleLength] = useState(settings.averageCycleLength || 28);
+  const [periodLength, setPeriodLength] = useState(settings.averagePeriodLength || 5);
+  const [isSaving, setIsSaving] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ text: string; error?: boolean } | null>(null);
+
+  const configured = isFirebaseConfigured();
+
+  const handleSaveParameters = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    await onUpdateSettings({
+      ...settings,
+      averageCycleLength: Number(cycleLength),
+      averagePeriodLength: Number(periodLength)
+    });
+    setIsSaving(false);
+    setStatusMsg({ text: 'Настройки сохранены!' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setStatusMsg(null);
+      await loginWithGoogle();
+      setStatusMsg({ text: 'Успешный вход в Google!' });
+    } catch (err: any) {
+      console.error(err);
+      setStatusMsg({
+        text: err.message || 'Ошибка входа через Google',
+        error: true
+      });
+    }
+  };
+
+  const handleLogout = async () => {
+    if (window.confirm('Выйти из учетной записи?')) {
+      await logoutUser();
+      onClose();
+    }
+  };
+
+  const handleFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      const content = evt.target?.result as string;
+      const res = await importDataFromJSON(user ? user.uid : null, content);
+      setStatusMsg({
+        text: res.message,
+        error: !res.success
+      });
+      if (res.success) {
+        setTimeout(() => window.location.reload(), 1500);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl border border-blush-100 overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blush-50/50 to-white">
+          <div className="flex items-center space-x-2">
+            <Sliders className="w-5 h-5 text-blush-600" />
+            <h3 className="text-base font-bold text-slate-800">Настройки</h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs text-slate-700">
+          {statusMsg && (
+            <div
+              className={`p-3 rounded-2xl flex items-center space-x-2 ${
+                statusMsg.error
+                  ? 'bg-rose-50 border border-rose-200 text-rose-700'
+                  : 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              }`}
+            >
+              {statusMsg.error ? (
+                <AlertCircle className="w-4 h-4 shrink-0" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+              )}
+              <span className="font-medium">{statusMsg.text}</span>
+            </div>
+          )}
+
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-slate-800 text-sm flex items-center space-x-1.5">
+                <ShieldCheck className="w-4 h-4 text-blush-600" />
+                <span>Учётная запись Google</span>
+              </span>
+              {configured ? (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                  Firebase подключен
+                </span>
+              ) : (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                  Локальный режим
+                </span>
+              )}
+            </div>
+
+            {user ? (
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center space-x-3">
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || ''}
+                      className="w-10 h-10 rounded-full border border-blush-200"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-blush-100 text-blush-600 flex items-center justify-center font-bold">
+                      <UserIcon className="w-5 h-5" />
+                    </div>
+                  )}
+                  <div>
+                    <strong className="block text-slate-800 text-sm">
+                      {user.displayName || 'Пользователь'}
+                    </strong>
+                    <span className="text-slate-400 text-xs">{user.email}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 pt-1">
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 py-2 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 font-semibold flex items-center justify-center space-x-1.5 transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Выйти</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2.5 pt-1">
+                <p className="text-slate-500 text-[11px] leading-relaxed">
+                  Войдите через Google, чтобы ваши данные автоматически и надёжно сохранялись в защищенном облаке и никогда не терялись при смене телефона.
+                </p>
+                <button
+                  onClick={handleGoogleLogin}
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold flex items-center justify-center space-x-2 shadow-xs transition-colors"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Войти через Google</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={onOpenFirebaseGuide}
+              className="p-3 rounded-2xl bg-orange-50/70 hover:bg-orange-100/70 border border-orange-200/70 text-left transition-colors"
+            >
+              <div className="flex items-center space-x-1.5 text-orange-700 font-bold mb-0.5">
+                <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
+                <span>Гайд Firebase</span>
+              </div>
+              <p className="text-[10px] text-slate-500">Пошаговая инструкция</p>
+            </button>
+
+            <button
+              onClick={onOpenFirebaseConfig}
+              className="p-3 rounded-2xl bg-blush-50/70 hover:bg-blush-100/70 border border-blush-200/70 text-left transition-colors"
+            >
+              <div className="flex items-center space-x-1.5 text-blush-700 font-bold mb-0.5">
+                <Key className="w-4 h-4 text-blush-600" />
+                <span>Ключи API</span>
+              </div>
+              <p className="text-[10px] text-slate-500">Настройка подключения</p>
+            </button>
+          </div>
+
+          <form onSubmit={handleSaveParameters} className="space-y-3 pt-1">
+            <h4 className="font-bold text-slate-800 text-sm">Параметры цикла</h4>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                  Средний цикл (дней)
+                </label>
+                <input
+                  type="number"
+                  min="20"
+                  max="45"
+                  value={cycleLength}
+                  onChange={(e) => setCycleLength(Number(e.target.value))}
+                  className="w-full p-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blush-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                  Длительность месячных
+                </label>
+                <input
+                  type="number"
+                  min="2"
+                  max="12"
+                  value={periodLength}
+                  onChange={(e) => setPeriodLength(Number(e.target.value))}
+                  className="w-full p-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blush-400"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold transition-colors"
+            >
+              {isSaving ? 'Сохранение...' : 'Обновить параметры'}
+            </button>
+          </form>
+
+          <div className="pt-2 border-t border-slate-100 space-y-2.5">
+            <h4 className="font-bold text-slate-800 text-sm">Резервная копия данных</h4>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Вы в любой момент можете скачать все свои данные в один JSON-файл и сохранить его себе на телефон или в заметки.
+            </p>
+
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => exportDataAsJSON(appData)}
+                className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-blush-200 hover:bg-blush-50 text-blush-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Скачать копию (.json)</span>
+              </button>
+
+              <label className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shadow-xs">
+                <Upload className="w-3.5 h-3.5 text-slate-500" />
+                <span>Восстановить</span>
+                <input
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={handleFileImport}
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/lib/firebase.ts">
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import type { FirebaseApp } from 'firebase/app';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signInWithRedirect, 
+  getRedirectResult,
+  signOut, 
+  onAuthStateChanged
+} from 'firebase/auth';
+import type { User, Auth } from 'firebase/auth';
+import { 
+  getFirestore, 
+  Firestore, 
+  initializeFirestore, 
+  persistentLocalCache, 
+  persistentMultipleTabManager 
+} from 'firebase/firestore';
+
+export interface FirebaseConfigType {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId: string;
+}
+
+export function getStoredFirebaseConfig(): FirebaseConfigType | null {
+  try {
+    const raw = localStorage.getItem('eva_firebase_config');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.apiKey && parsed.projectId) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Failed reading custom firebase config', e);
+  }
+
+  const envConfig: FirebaseConfigType = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
+  };
+
+  if (envConfig.apiKey && envConfig.projectId) {
+    return envConfig;
+  }
+
+  return null;
+}
+
+export function saveStoredFirebaseConfig(config: FirebaseConfigType): void {
+  localStorage.setItem('eva_firebase_config', JSON.stringify(config));
+  window.location.reload();
+}
+
+export function removeStoredFirebaseConfig(): void {
+  localStorage.removeItem('eva_firebase_config');
+  window.location.reload();
+}
+
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
+
+const config = getStoredFirebaseConfig();
+
+if (config && config.apiKey && config.projectId) {
+  try {
+    if (!getApps().length) {
+      app = initializeApp(config);
+      db = initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager()
+        })
+      });
+    } else {
+      app = getApp();
+      db = getFirestore(app);
+    }
+    auth = getAuth(app);
+  } catch (err) {
+    console.warn('Firebase initialization error, fallback to memory', err);
+    if (app) {
+      db = getFirestore(app);
+      auth = getAuth(app);
+    }
+  }
+}
+
+export { app, auth, db };
+
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+export async function loginWithGoogle(): Promise<User | null> {
+  if (!auth) {
+    throw new Error('Firebase не настроен. Пожалуйста, укажите конфигурацию Firebase в настройках.');
+  }
+
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (error: any) {
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
+      console.log('Popup blocked, attempting signInWithRedirect...');
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function checkRedirectAuth(): Promise<User | null> {
+  if (!auth) return null;
+  try {
+    const result = await getRedirectResult(auth);
+    return result?.user || null;
+  } catch (err) {
+    console.error('Redirect auth error', err);
+    return null;
+  }
+}
+
+export async function logoutUser(): Promise<void> {
+  if (!auth) return;
+  await signOut(auth);
+}
+
+export function subscribeToAuth(callback: (user: User | null) => void): () => void {
+  if (!auth) {
+    callback(null);
+    return () => {};
+  }
+  return onAuthStateChanged(auth, callback);
+}
+
+export function isFirebaseConfigured(): boolean {
+  return Boolean(config && config.apiKey && config.projectId);
+}
+</file>
+
+<file path="src/lib/storage.ts">
+import {
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  deleteDoc,
+  writeBatch
+} from 'firebase/firestore';
+import { db } from './firebase';
+import type { DayLog, PeriodCycle, UserSettings } from '../types';
+import { DEFAULT_SETTINGS } from '../utils/cycleCalculations';
+
+const LOCAL_CYCLES_KEY = 'eva_guest_cycles';
+const LOCAL_LOGS_KEY = 'eva_guest_logs';
+const LOCAL_SETTINGS_KEY = 'eva_guest_settings';
+
+export interface AppData {
+  cycles: PeriodCycle[];
+  dayLogs: Record<string, DayLog>;
+  settings: UserSettings;
+}
+
+export function subscribeToUserData(
+  userId: string,
+  onData: (data: AppData) => void,
+  onError: (err: any) => void
+): () => void {
+  if (!db || !userId) {
+    const data = loadLocalGuestData();
+    onData(data);
+    return () => {};
+  }
+
+  const cyclesRef = collection(db, 'users', userId, 'cycles');
+  const logsRef = collection(db, 'users', userId, 'logs');
+  const settingsRef = doc(db, 'users', userId, 'profile', 'settings');
+
+  let currentCycles: PeriodCycle[] = [];
+  let currentLogs: Record<string, DayLog> = {};
+  let currentSettings: UserSettings = DEFAULT_SETTINGS;
+
+  const emit = () => {
+    onData({
+      cycles: currentCycles,
+      dayLogs: currentLogs,
+      settings: currentSettings
+    });
+  };
+
+  const unsubCycles = onSnapshot(
+    cyclesRef,
+    (snapshot) => {
+      currentCycles = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...(docSnap.data() as Omit<PeriodCycle, 'id'>)
+      }));
+      emit();
+    },
+    onError
+  );
+
+  const unsubLogs = onSnapshot(
+    logsRef,
+    (snapshot) => {
+      const logsMap: Record<string, DayLog> = {};
+      snapshot.docs.forEach((docSnap) => {
+        const data = docSnap.data() as DayLog;
+        logsMap[data.date] = data;
+      });
+      currentLogs = logsMap;
+      emit();
+    },
+    onError
+  );
+
+  const unsubSettings = onSnapshot(
+    settingsRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        currentSettings = { ...DEFAULT_SETTINGS, ...(docSnap.data() as UserSettings) };
+      } else {
+        currentSettings = DEFAULT_SETTINGS;
+      }
+      emit();
+    },
+    onError
+  );
+
+  return () => {
+    unsubCycles();
+    unsubLogs();
+    unsubSettings();
+  };
+}
+
+export async function saveCycle(userId: string | null, cycle: PeriodCycle): Promise<void> {
+  if (!userId || !db) {
+    const data = loadLocalGuestData();
+    const existingIndex = data.cycles.findIndex((c) => c.id === cycle.id);
+    if (existingIndex >= 0) {
+      data.cycles[existingIndex] = cycle;
+    } else {
+      data.cycles.push(cycle);
+    }
+    saveLocalGuestData(data);
+    return;
+  }
+
+  const cycleRef = doc(db, 'users', userId, 'cycles', cycle.id);
+  await setDoc(cycleRef, cycle, { merge: true });
+}
+
+export async function deleteCycle(userId: string | null, cycleId: string): Promise<void> {
+  if (!userId || !db) {
+    const data = loadLocalGuestData();
+    data.cycles = data.cycles.filter((c) => c.id !== cycleId);
+    saveLocalGuestData(data);
+    return;
+  }
+
+  const cycleRef = doc(db, 'users', userId, 'cycles', cycleId);
+  await deleteDoc(cycleRef);
+}
+
+export async function saveDayLog(userId: string | null, log: DayLog): Promise<void> {
+  if (!userId || !db) {
+    const data = loadLocalGuestData();
+    data.dayLogs[log.date] = log;
+    saveLocalGuestData(data);
+    return;
+  }
+
+  const logRef = doc(db, 'users', userId, 'logs', log.date);
+  await setDoc(logRef, log, { merge: true });
+}
+
+export async function deleteDayLog(userId: string | null, dateStr: string): Promise<void> {
+  if (!userId || !db) {
+    const data = loadLocalGuestData();
+    delete data.dayLogs[dateStr];
+    saveLocalGuestData(data);
+    return;
+  }
+
+  const logRef = doc(db, 'users', userId, 'logs', dateStr);
+  await deleteDoc(logRef);
+}
+
+export async function saveSettings(userId: string | null, settings: UserSettings): Promise<void> {
+  if (!userId || !db) {
+    const data = loadLocalGuestData();
+    data.settings = settings;
+    saveLocalGuestData(data);
+    return;
+  }
+
+  const settingsRef = doc(db, 'users', userId, 'profile', 'settings');
+  await setDoc(settingsRef, settings, { merge: true });
+}
+
+export function loadLocalGuestData(): AppData {
+  try {
+    const cycles = JSON.parse(localStorage.getItem(LOCAL_CYCLES_KEY) || '[]');
+    const dayLogs = JSON.parse(localStorage.getItem(LOCAL_LOGS_KEY) || '{}');
+    const settings = JSON.parse(localStorage.getItem(LOCAL_SETTINGS_KEY) || JSON.stringify(DEFAULT_SETTINGS));
+    return { cycles, dayLogs, settings };
+  } catch (err) {
+    return { cycles: [], dayLogs: {}, settings: DEFAULT_SETTINGS };
+  }
+}
+
+export function saveLocalGuestData(data: AppData): void {
+  localStorage.setItem(LOCAL_CYCLES_KEY, JSON.stringify(data.cycles));
+  localStorage.setItem(LOCAL_LOGS_KEY, JSON.stringify(data.dayLogs));
+  localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(data.settings));
+}
+
+export function exportDataAsJSON(data: AppData): void {
+  const exportPayload = {
+    appName: 'Eva Period Calendar',
+    version: 1,
+    exportDate: new Date().toISOString(),
+    data
+  };
+
+  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+    type: 'application/json'
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `eva-calendar-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export async function importDataFromJSON(
+  userId: string | null,
+  jsonText: string
+): Promise<{ success: boolean; message: string; count: number }> {
+  try {
+    const parsed = JSON.parse(jsonText);
+    const incomingData: AppData = parsed.data || parsed;
+
+    if (!incomingData.cycles && !incomingData.dayLogs) {
+      throw new Error('Неверный формат файла резервной копии');
+    }
+
+    const cycles = incomingData.cycles || [];
+    const logs = incomingData.dayLogs || {};
+    const settings = incomingData.settings || DEFAULT_SETTINGS;
+
+    if (userId && db) {
+      const batch = writeBatch(db);
+
+      for (const c of cycles) {
+        const cRef = doc(db, 'users', userId, 'cycles', c.id);
+        batch.set(cRef, c, { merge: true });
+      }
+
+      for (const [dateKey, log] of Object.entries(logs)) {
+        const lRef = doc(db, 'users', userId, 'logs', dateKey);
+        batch.set(lRef, log, { merge: true });
+      }
+
+      const sRef = doc(db, 'users', userId, 'profile', 'settings');
+      batch.set(sRef, settings, { merge: true });
+
+      await batch.commit();
+    } else {
+      saveLocalGuestData({ cycles, dayLogs: logs, settings });
+    }
+
+    return {
+      success: true,
+      message: 'Данные успешно восстановлены!',
+      count: cycles.length + Object.keys(logs).length
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.message || 'Ошибка импорта файла',
+      count: 0
+    };
+  }
+}
+</file>
+
+<file path="src/types/index.ts">
+export type FlowIntensity = 'none' | 'spotting' | 'light' | 'medium' | 'heavy';
+
+export type SymptomType = 
+  | 'cramps' // спазмы внизу живота
+  | 'headache' // головная боль
+  | 'bloating' // вздутие
+  | 'tender_breasts' // чувствительность груди
+  | 'fatigue' // усталость
+  | 'backache' // боль в пояснице
+  | 'acne' // высыпания
+  | 'nausea' // тошнота
+  | 'insomnia' // бессонница
+  | 'cravings'; // тяга к сладкому
+
+export type MoodType = 
+  | 'happy' // радостное
+  | 'calm' // спокойное
+  | 'energetic' // прилив энергии
+  | 'sensitive' // чувствительное / ранимое
+  | 'irritated' // раздражительное
+  | 'anxious' // тревожное
+  | 'sad' // грустное
+  | 'romantic'; // романтичное
+
+export type SexActivity = 'none' | 'protected' | 'unprotected' | 'high_libido';
+
+export interface DayLog {
+  date: string; // YYYY-MM-DD
+  isPeriod: boolean;
+  flowIntensity?: FlowIntensity;
+  symptoms: SymptomType[];
+  moods: MoodType[];
+  sexActivity?: SexActivity;
+  temperature?: number;
+  notes?: string;
+  updatedAt: number;
+}
+
+export interface PeriodCycle {
+  id: string;
+  startDate: string; // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
+  durationDays?: number; // length of period in days
+  cycleLength?: number; // days from this start to next start
+  isOngoing?: boolean;
+}
+
+export interface UserSettings {
+  displayName?: string;
+  averageCycleLength: number; // e.g. 28
+  averagePeriodLength: number; // e.g. 5
+  lutealPhaseLength: number; // e.g. 14
+}
+
+export type CyclePhase = 
+  | 'menstrual' // Менструация
+  | 'follicular' // Фолликулярная фаза
+  | 'ovulation' // Овуляция / Пик фертильности
+  | 'luteal'; // Лютеиновая фаза (ПМС)
+
+export interface CycleStats {
+  currentCycleDay: number;
+  currentPhase: CyclePhase;
+  phaseTitle: string;
+  phaseDescription: string;
+  daysUntilNextPeriod: number;
+  nextPeriodDate: string; // YYYY-MM-DD
+  ovulationDate: string; // YYYY-MM-DD
+  fertileWindowStart: string; // YYYY-MM-DD
+  fertileWindowEnd: string; // YYYY-MM-DD
+  pregnancyChance: 'Низкая' | 'Средняя' | 'Высокая' | 'Пик овуляции';
+  avgCycleLength: number;
+  avgPeriodLength: number;
+  isDelay: boolean;
+  delayDays: number;
+}
+</file>
+
+<file path="src/utils/affirmations.ts">
+import type { CyclePhase } from '../types';
+
+export interface DailyMessage {
+  compliment: string;
+  prediction: string;
+  tip: string;
+  icon: string;
+}
+
+export const DAILY_MESSAGES: DailyMessage[] = [
+  {
+    compliment: "Ты наполняешь этот мир особенным теплом и красотой просто тем, что ты есть.",
+    prediction: "Сегодня тебя ждёт маленькая неожиданная радость или знак внимания, который вызовет искреннюю улыбку.",
+    tip: "Подари себе 15 минут тишины с любимым напитком — ты это заслужила.",
+    icon: "🌸"
+  },
+  {
+    compliment: "Твоя улыбка обладает невероятной силой делать любой день светлее.",
+    prediction: "Звёзды говорят, что сегодня удачный день для смелых идей и лёгких решений.",
+    tip: "Включи любимую музыку и сделай пару глубоких вдохов — почувствуй свою гармонию.",
+    icon: "✨"
+  },
+  {
+    compliment: "В тебе потрясающее сочетание нежности и внутренней силы.",
+    prediction: "Сегодня кто-то вспомнит о тебе с особой теплотой и любовью.",
+    tip: "Не бойся говорить «нет» тому, что отнимает энергию, и «да» приятным мелочам.",
+    icon: "💖"
+  },
+  {
+    compliment: "Ты удивительно чуткая и мудрая. Доверяй своему сердцу, оно не ошибается.",
+    prediction: "День подарит ощущение лёгкости, а задуманное сложится даже лучше, чем ты планировала.",
+    tip: "Прогуляйся на свежем воздухе хотя бы немного — это перезагрузит мысли.",
+    icon: "🌿"
+  },
+  {
+    compliment: "У тебя восхитительный вкус и редкое чувство прекрасного.",
+    prediction: "Сегодняшний вечер будет особенно уютным и принесёт душевное спокойствие.",
+    tip: "Зажги ароматную свечу или прими расслабляющую ванну перед сном.",
+    icon: "🕯️"
+  },
+  {
+    compliment: "Ты умеешь замечать волшебство в простых вещах, и это твоя суперсила.",
+    prediction: "Тебя ждет комплимент от дорогого человека, который растопит твое сердце.",
+    tip: "Сделай себе сегодня маленькое гастрономическое удовольствие без всякого чувства вины.",
+    icon: "🍓"
+  },
+  {
+    compliment: "Твои глаза светятся добротой, в которой хочется раствориться.",
+    prediction: "Сегодня сложная задача решится гораздо проще и быстрее, чем казалось с утра.",
+    tip: "Оставь немного времени для любимой книги или душевного разговора.",
+    icon: "📖"
+  },
+  {
+    compliment: "Ты восхитительна в любом настроении и в любом ритме.",
+    prediction: "День заряжен на вдохновение: возможно, тебе захочется попробовать что-то новое.",
+    tip: "Пей побольше чистой воды и мягко потянись — тело поблагодарит тебя.",
+    icon: "💧"
+  },
+  {
+    compliment: "Ты — главная муза и самое уютное место для тех, кто тебя любит.",
+    prediction: "Сегодня произойдет что-то, что напомнит тебе, как сильно тебя ценят.",
+    tip: "Разреши себе просто быть и никуда не торопиться.",
+    icon: "🌙"
+  },
+  {
+    compliment: "Твоя естественная красота завораживает. В тебе есть особенный шарм.",
+    prediction: "Интуиция сегодня работает как компас — следуй за первыми ощущениями.",
+    tip: "Надень то, в чем ты чувствуешь себя максимально комфортно и уверенно.",
+    icon: "🌷"
+  },
+  {
+    compliment: "Рядом с тобой всегда становится спокойнее и теплее на душе.",
+    prediction: "Сегодня отличный момент загадать маленькое желание — пространство к тебе благосклонно.",
+    tip: "Сделай нежную разминку для плеч и шеи, отпусти накопившееся напряжение.",
+    icon: "🕊️"
+  },
+  {
+    compliment: "Ты умеешь любить всем сердцем, и это делает тебя по-настоящему уникальной.",
+    prediction: "В ближайшие часы тебя ждёт тёплое сообщение или звонок с добрыми новостями.",
+    tip: "Похвали себя за все сделанное за эту неделю — ты большая умница.",
+    icon: "💌"
+  }
+];
+
+export const PHASE_SPECIFIC_TIPS: Record<CyclePhase, { title: string; hint: string; icon: string }> = {
+  menstrual: {
+    title: "Дни заботы и покоя",
+    hint: "Твое тело сейчас обновляется. Отдыхай, укутайся в мягкий плед, пей теплый травяной чай и окружи себя теплом.",
+    icon: "🌺"
+  },
+  follicular: {
+    title: "Фаза расцвета и энергии",
+    hint: "Уровень эстрогена растет, возвращаются силы и вдохновение. Прекрасное время для новых начинаний, красоты и активности!",
+    icon: "🌱"
+  },
+  ovulation: {
+    title: "Пик сияния и притяжения",
+    hint: "Ты на пике магнетизма и энергии. Глаза сияют, либидо высокое, уверенность на максимуме. Сияй во всей красе!",
+    icon: "✨"
+  },
+  luteal: {
+    title: "Уютный режим и замедление",
+    hint: "Организм готовится к новому циклу. Возможна чувствительность — будь бережна к себе, добавь магний, шоколад и крепкий сон.",
+    icon: "🌙"
+  }
+};
+
+export function getDailyAffirmation(dateStr?: string, seedOffset = 0): DailyMessage {
+  const targetDate = dateStr || new Date().toISOString().slice(0, 10);
+  
+  let hash = seedOffset;
+  for (let i = 0; i < targetDate.length; i++) {
+    hash = (hash << 5) - hash + targetDate.charCodeAt(i);
+    hash |= 0;
+  }
+  
+  const index = Math.abs(hash) % DAILY_MESSAGES.length;
+  return DAILY_MESSAGES[index];
+}
+</file>
+
+<file path="src/utils/cycleCalculations.ts">
+import {
+  addDays,
+  differenceInDays,
+  format,
+  isAfter,
+  isBefore,
+  isSameDay,
+  parseISO,
+  startOfDay,
+  subDays
+} from 'date-fns';
+import { ru } from 'date-fns/locale';
+import type { CyclePhase, CycleStats, DayLog, PeriodCycle, UserSettings } from '../types';
+
+export const DEFAULT_SETTINGS: UserSettings = {
+  averageCycleLength: 28,
+  averagePeriodLength: 5,
+  lutealPhaseLength: 14,
+  displayName: 'Любимая'
+};
+
+export function formatDateKey(date: Date): string {
+  return format(date, 'yyyy-MM-dd');
+}
+
+export function formatReadableDate(dateStr: string, formatStr = 'd MMMM yyyy'): string {
+  try {
+    return format(parseISO(dateStr), formatStr, { locale: ru });
+  } catch {
+    return dateStr;
+  }
+}
+
+export function calculateAverages(
+  cycles: PeriodCycle[],
+  settings: UserSettings
+): { avgCycleLength: number; avgPeriodLength: number } {
+  if (!cycles || cycles.length === 0) {
+    return {
+      avgCycleLength: settings.averageCycleLength,
+      avgPeriodLength: settings.averagePeriodLength
+    };
+  }
+
+  const sorted = [...cycles].sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+  );
+
+  const periodLengths: number[] = [];
+  for (const c of sorted) {
+    if (c.endDate && c.startDate) {
+      const dur = differenceInDays(parseISO(c.endDate), parseISO(c.startDate)) + 1;
+      if (dur >= 2 && dur <= 12) {
+        periodLengths.push(dur);
+      }
+    }
+  }
+
+  const cycleLengths: number[] = [];
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const diff = differenceInDays(
+      parseISO(sorted[i + 1].startDate),
+      parseISO(sorted[i].startDate)
+    );
+    if (diff >= 20 && diff <= 45) {
+      cycleLengths.push(diff);
+    }
+  }
+
+  const avgPeriodLength =
+    periodLengths.length > 0
+      ? Math.round(periodLengths.reduce((a, b) => a + b, 0) / periodLengths.length)
+      : settings.averagePeriodLength;
+
+  const avgCycleLength =
+    cycleLengths.length > 0
+      ? Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
+      : settings.averageCycleLength;
+
+  return { avgCycleLength, avgPeriodLength };
+}
+
+export function computeCycleStats(
+  cycles: PeriodCycle[],
+  settings: UserSettings = DEFAULT_SETTINGS,
+  referenceDate: Date = new Date()
+): CycleStats {
+  const { avgCycleLength, avgPeriodLength } = calculateAverages(cycles, settings);
+  const today = startOfDay(referenceDate);
+
+  if (!cycles || cycles.length === 0) {
+    const nextDate = addDays(today, 14);
+    const ovDate = addDays(today, 0);
+    return {
+      currentCycleDay: 14,
+      currentPhase: 'ovulation',
+      phaseTitle: 'Овуляция',
+      phaseDescription: 'Пик фертильности и энергии. Отметь первый день цикла, чтобы настроить календарь.',
+      daysUntilNextPeriod: 14,
+      nextPeriodDate: formatDateKey(nextDate),
+      ovulationDate: formatDateKey(ovDate),
+      fertileWindowStart: formatDateKey(subDays(ovDate, 4)),
+      fertileWindowEnd: formatDateKey(addDays(ovDate, 1)),
+      pregnancyChance: 'Пик овуляции',
+      avgCycleLength,
+      avgPeriodLength,
+      isDelay: false,
+      delayDays: 0
+    };
+  }
+
+  const sorted = [...cycles].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+  const latest = sorted[0];
+  const lastStart = startOfDay(parseISO(latest.startDate));
+
+  const currentCycleDay = Math.max(1, differenceInDays(today, lastStart) + 1);
+  const nextPeriod = addDays(lastStart, avgCycleLength);
+  const daysUntilNext = differenceInDays(nextPeriod, today);
+
+  const isDelay = daysUntilNext < 0;
+  const delayDays = isDelay ? Math.abs(daysUntilNext) : 0;
+
+  const ovulation = subDays(nextPeriod, settings.lutealPhaseLength || 14);
+  const fertileStart = subDays(ovulation, 5);
+  const fertileEnd = addDays(ovulation, 1);
+
+  let currentPhase: CyclePhase = 'follicular';
+  let phaseTitle = 'Фолликулярная фаза';
+  let phaseDescription = 'Уровень энергии и настроения растет. Организм готовится к овуляции.';
+  let pregnancyChance: CycleStats['pregnancyChance'] = 'Низкая';
+
+  const periodEnd = latest.endDate
+    ? startOfDay(parseISO(latest.endDate))
+    : addDays(lastStart, avgPeriodLength - 1);
+
+  if ((isSameDay(today, lastStart) || isAfter(today, lastStart)) && (isSameDay(today, periodEnd) || isBefore(today, periodEnd))) {
+    currentPhase = 'menstrual';
+    phaseTitle = 'Менструация';
+    phaseDescription = 'Время замедлиться, окружить себя теплом, уютом и заботой.';
+    pregnancyChance = 'Низкая';
+  } else if (
+    (isSameDay(today, fertileStart) || isAfter(today, fertileStart)) &&
+    (isSameDay(today, fertileEnd) || isBefore(today, fertileEnd))
+  ) {
+    currentPhase = 'ovulation';
+    if (isSameDay(today, ovulation)) {
+      phaseTitle = 'День овуляции';
+      phaseDescription = 'Пик фертильности! Максимальная вероятность зачатия и всплеск энергии.';
+      pregnancyChance = 'Пик овуляции';
+    } else {
+      phaseTitle = 'Окно фертильности';
+      phaseDescription = 'Высокая вероятность зачатия. Прекрасное самочувствие и сияние.';
+      pregnancyChance = 'Высокая';
+    }
+  } else if (isAfter(today, fertileEnd)) {
+    currentPhase = 'luteal';
+    phaseTitle = 'Лютеиновая фаза';
+    phaseDescription = 'Вторая половина цикла. Организму может требоваться больше отдыха и нежности.';
+    pregnancyChance = 'Низкая';
+  } else {
+    currentPhase = 'follicular';
+    phaseTitle = 'Фолликулярная фаза';
+    phaseDescription = 'Фаза возрождения и активности. Отличное время для планов и тренировок.';
+    pregnancyChance = 'Средняя';
+  }
+
+  return {
+    currentCycleDay,
+    currentPhase,
+    phaseTitle,
+    phaseDescription,
+    daysUntilNextPeriod: Math.max(0, daysUntilNext),
+    nextPeriodDate: formatDateKey(nextPeriod),
+    ovulationDate: formatDateKey(ovulation),
+    fertileWindowStart: formatDateKey(fertileStart),
+    fertileWindowEnd: formatDateKey(fertileEnd),
+    pregnancyChance,
+    avgCycleLength,
+    avgPeriodLength,
+    isDelay,
+    delayDays
+  };
+}
+
+export function getCalendarDayInfo(
+  date: Date,
+  cycles: PeriodCycle[],
+  dayLogs: Record<string, DayLog>,
+  stats: CycleStats
+) {
+  const dateKey = formatDateKey(date);
+  const log = dayLogs[dateKey];
+  const dayStart = startOfDay(date);
+
+  let isPeriod = log?.isPeriod || false;
+  if (!isPeriod) {
+    for (const c of cycles) {
+      const cStart = startOfDay(parseISO(c.startDate));
+      const cEnd = c.endDate
+        ? startOfDay(parseISO(c.endDate))
+        : addDays(cStart, stats.avgPeriodLength - 1);
+      
+      if ((isSameDay(dayStart, cStart) || isAfter(dayStart, cStart)) &&
+          (isSameDay(dayStart, cEnd) || isBefore(dayStart, cEnd))) {
+        isPeriod = true;
+        break;
+      }
+    }
+  }
+
+  let isPredictedPeriod = false;
+  if (!isPeriod && stats.nextPeriodDate) {
+    const nextStart = startOfDay(parseISO(stats.nextPeriodDate));
+    const nextEnd = addDays(nextStart, stats.avgPeriodLength - 1);
+    
+    if ((isSameDay(dayStart, nextStart) || isAfter(dayStart, nextStart)) &&
+        (isSameDay(dayStart, nextEnd) || isBefore(dayStart, nextEnd))) {
+      isPredictedPeriod = true;
+    }
+
+    const future2Start = addDays(nextStart, stats.avgCycleLength);
+    const future2End = addDays(future2Start, stats.avgPeriodLength - 1);
+    if ((isSameDay(dayStart, future2Start) || isAfter(dayStart, future2Start)) &&
+        (isSameDay(dayStart, future2End) || isBefore(dayStart, future2End))) {
+      isPredictedPeriod = true;
+    }
+  }
+
+  const isOvulation = stats.ovulationDate === dateKey;
+  
+  let isFertile = false;
+  if (stats.fertileWindowStart && stats.fertileWindowEnd) {
+    const fStart = startOfDay(parseISO(stats.fertileWindowStart));
+    const fEnd = startOfDay(parseISO(stats.fertileWindowEnd));
+    if ((isSameDay(dayStart, fStart) || isAfter(dayStart, fStart)) &&
+        (isSameDay(dayStart, fEnd) || isBefore(dayStart, fEnd))) {
+      isFertile = true;
+    }
+  }
+
+  const hasNotes = Boolean(log?.notes && log.notes.trim().length > 0);
+  const hasSymptoms = Boolean(log?.symptoms && log.symptoms.length > 0);
+  const hasMoods = Boolean(log?.moods && log.moods.length > 0);
+  const hasSex = Boolean(log?.sexActivity && log.sexActivity !== 'none');
+
+  return {
+    isPeriod,
+    isPredictedPeriod,
+    isOvulation,
+    isFertile,
+    hasLog: hasNotes || hasSymptoms || hasMoods || hasSex,
+    flowIntensity: log?.flowIntensity,
+    log
+  };
+}
+</file>
+
+<file path="src/App.css">
+/* App root styles */
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+</file>
+
+<file path="src/App.tsx">
+import React, { useState, useEffect } from 'react';
+import type { User } from 'firebase/auth';
+import { differenceInDays, parseISO, startOfDay } from 'date-fns';
+import { Header } from './components/Header';
+import { DailyCard } from './components/DailyCard';
+import { CycleRing } from './components/CycleRing';
+import { CalendarView } from './components/CalendarView';
+import { AnalyticsView } from './components/AnalyticsView';
+import { DayLogModal } from './components/DayLogModal';
+import { SettingsModal } from './components/SettingsModal';
+import { FirebaseGuideModal } from './components/FirebaseGuideModal';
+import { FirebaseConfigModal } from './components/FirebaseConfigModal';
+import { BottomNav } from './components/BottomNav';
+import type { NavTab } from './components/BottomNav';
+import type { DayLog, PeriodCycle, UserSettings } from './types';
+import {
+  DEFAULT_SETTINGS,
+  computeCycleStats,
+  formatDateKey
+} from './utils/cycleCalculations';
+import {
+  subscribeToUserData,
+  saveCycle,
+  deleteCycle,
+  saveDayLog,
+  deleteDayLog,
+  saveSettings
+} from './lib/storage';
+import type { AppData } from './lib/storage';
+import {
+  subscribeToAuth,
+  checkRedirectAuth
+} from './lib/firebase';
+
+export const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [activeTab, setActiveTab] = useState<NavTab>('home');
+  const [selectedDateStr, setSelectedDateStr] = useState<string | null>(null);
+
+  // App data state
+  const [cycles, setCycles] = useState<PeriodCycle[]>([]);
+  const [dayLogs, setDayLogs] = useState<Record<string, DayLog>>({});
+  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
+
+  // Modals
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showFirebaseGuide, setShowFirebaseGuide] = useState(false);
+  const [showFirebaseConfig, setShowFirebaseConfig] = useState(false);
+
+  // Check redirect auth on load (for mobile Safari)
+  useEffect(() => {
+    checkRedirectAuth().then((redirectUser) => {
+      if (redirectUser) {
+        setUser(redirectUser);
+      }
+    });
+
+    const unsubAuth = subscribeToAuth((currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubAuth();
+  }, []);
+
+  // Subscribe to user data (Firestore or Guest fallback)
+  useEffect(() => {
+    const unsubData = subscribeToUserData(
+      user ? user.uid : '',
+      (data) => {
+        setCycles(data.cycles);
+        setDayLogs(data.dayLogs);
+        setSettings(data.settings);
+      },
+      (err) => {
+        console.warn('Subscription error, using local fallback', err);
+      }
+    );
+
+    return () => unsubData();
+  }, [user]);
+
+  const appData: AppData = {
+    cycles,
+    dayLogs,
+    settings
+  };
+
+  const todayStr = formatDateKey(new Date());
+  const stats = computeCycleStats(cycles, settings);
+
+  // Check if today is during an active period
+  const sortedCycles = [...cycles].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+  const latestCycle = sortedCycles[0];
+
+  const isTodayMarkedPeriod = Boolean(dayLogs[todayStr]?.isPeriod);
+  const isOngoingCycle = Boolean(
+    latestCycle && (!latestCycle.endDate || latestCycle.isOngoing)
+  );
+
+  const isPeriodActive = isTodayMarkedPeriod || isOngoingCycle;
+
+  // Handler: Quick toggle period
+  const handleTogglePeriod = async () => {
+    const userId = user ? user.uid : null;
+
+    if (isPeriodActive) {
+      // Ending period
+      if (latestCycle) {
+        const dur =
+          differenceInDays(
+            startOfDay(parseISO(todayStr)),
+            startOfDay(parseISO(latestCycle.startDate))
+          ) + 1;
+
+        await saveCycle(userId, {
+          ...latestCycle,
+          endDate: todayStr,
+          durationDays: Math.max(1, dur),
+          isOngoing: false
+        });
+      }
+    } else {
+      // Starting new period
+      const newCycleId = `cycle_${Date.now()}`;
+      const newCycle: PeriodCycle = {
+        id: newCycleId,
+        startDate: todayStr,
+        isOngoing: true
+      };
+
+      await saveCycle(userId, newCycle);
+
+      // Also mark today's log as period
+      await saveDayLog(userId, {
+        date: todayStr,
+        isPeriod: true,
+        flowIntensity: 'medium',
+        symptoms: dayLogs[todayStr]?.symptoms || [],
+        moods: dayLogs[todayStr]?.moods || [],
+        sexActivity: dayLogs[todayStr]?.sexActivity || 'none',
+        notes: dayLogs[todayStr]?.notes || '',
+        updatedAt: Date.now()
+      });
+    }
+  };
+
+  // Handler: Save day log
+  const handleSaveDayLog = async (log: DayLog) => {
+    const userId = user ? user.uid : null;
+    await saveDayLog(userId, log);
+
+    // If marked as period and no cycle exists for this date, optionally create or attach
+    if (log.isPeriod) {
+      const existingCycle = cycles.find((c) => c.startDate === log.date);
+      if (!existingCycle) {
+        const sorted = [...cycles].sort(
+          (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+        const last = sorted[0];
+        if (!last || differenceInDays(parseISO(log.date), parseISO(last.startDate)) > 15) {
+          await saveCycle(userId, {
+            id: `cycle_${Date.now()}`,
+            startDate: log.date,
+            isOngoing: true
+          });
+        }
+      }
+    }
+  };
+
+  // Handler: Delete day log
+  const handleDeleteDayLog = async (dateStr: string) => {
+    const userId = user ? user.uid : null;
+    await deleteDayLog(userId, dateStr);
+  };
+
+  // Handler: Manual add cycle
+  const handleAddCycle = async (startDate: string, endDate?: string) => {
+    const userId = user ? user.uid : null;
+    let durationDays: number | undefined;
+    if (endDate) {
+      durationDays = differenceInDays(parseISO(endDate), parseISO(startDate)) + 1;
+    }
+
+    const newCycle: PeriodCycle = {
+      id: `cycle_${Date.now()}`,
+      startDate,
+      endDate: endDate || undefined,
+      durationDays,
+      isOngoing: !endDate
+    };
+
+    await saveCycle(userId, newCycle);
+  };
+
+  // Handler: Delete cycle
+  const handleDeleteCycle = async (cycleId: string) => {
+    const userId = user ? user.uid : null;
+    await deleteCycle(userId, cycleId);
+  };
+
+  // Handler: Update settings
+  const handleUpdateSettings = async (newSettings: UserSettings) => {
+    const userId = user ? user.uid : null;
+    await saveSettings(userId, newSettings);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FAF5F5] flex flex-col font-sans pb-safe-nav">
+      {/* App Header */}
+      <Header
+        user={user}
+        isGuest={!user}
+        onOpenSettings={() => setShowSettingsModal(true)}
+      />
+
+      {/* Main Content View Container */}
+      <main className="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
+        {activeTab === 'home' && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Daily Affirmation & Compliment Card */}
+            <DailyCard currentPhase={stats.currentPhase} />
+
+            {/* Hero Cycle Ring Widget */}
+            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-blush-200/80 shadow-soft">
+              <CycleRing
+                stats={stats}
+                isPeriodActive={isPeriodActive}
+                onTogglePeriod={handleTogglePeriod}
+                onOpenCalendar={() => setActiveTab('calendar')}
+              />
+            </div>
+
+            {/* Quick action: Today's symptom log shortcut */}
+            <button
+              onClick={() => setSelectedDateStr(todayStr)}
+              className="w-full py-3.5 px-4 rounded-2xl bg-white border border-blush-200/80 hover:border-blush-300 shadow-soft flex items-center justify-between text-left active:scale-98 transition-all"
+            >
+              <div className="flex items-center space-x-3">
+                <span className="text-xl">✍️</span>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-800">
+                    Как ты себя чувствуешь сегодня?
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Отметь симптомы, настроение и ощущения
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs font-semibold text-blush-600 bg-blush-50 px-2.5 py-1 rounded-xl">
+                Записать
+              </span>
+            </button>
+          </div>
+        )}
+
+        {activeTab === 'calendar' && (
+          <div className="space-y-4 animate-fade-in">
+            <CalendarView
+              cycles={cycles}
+              dayLogs={dayLogs}
+              stats={stats}
+              onSelectDate={(date) => setSelectedDateStr(date)}
+            />
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="space-y-4 animate-fade-in">
+            <AnalyticsView
+              cycles={cycles}
+              stats={stats}
+              onAddCycle={handleAddCycle}
+              onDeleteCycle={handleDeleteCycle}
+            />
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-white rounded-3xl p-5 border border-blush-200 shadow-soft space-y-4">
+              <h3 className="text-base font-bold text-slate-800">Быстрые действия</h3>
+              
+              <button
+                onClick={() => setShowSettingsModal(true)}
+                className="w-full py-3 px-4 rounded-2xl bg-blush-50 text-blush-700 font-semibold text-xs flex items-center justify-between hover:bg-blush-100 transition-colors"
+              >
+                <span>Все параметры и резервные копии</span>
+                <span>→</span>
+              </button>
+
+              <button
+                onClick={() => setShowFirebaseGuide(true)}
+                className="w-full py-3 px-4 rounded-2xl bg-orange-50 text-orange-700 font-semibold text-xs flex items-center justify-between hover:bg-orange-100 transition-colors"
+              >
+                <span>Инструкция по настройке Firebase</span>
+                <span>→</span>
+              </button>
+
+              <button
+                onClick={() => setShowFirebaseConfig(true)}
+                className="w-full py-3 px-4 rounded-2xl bg-slate-100 text-slate-700 font-semibold text-xs flex items-center justify-between hover:bg-slate-200 transition-colors"
+              >
+                <span>Ввести API ключи Firebase</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Bottom Floating Navigation */}
+      <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
+
+      {/* Day Log Detail Modal */}
+      {selectedDateStr && (
+        <DayLogModal
+          dateStr={selectedDateStr}
+          initialLog={dayLogs[selectedDateStr]}
+          onClose={() => setSelectedDateStr(null)}
+          onSave={handleSaveDayLog}
+          onDelete={handleDeleteDayLog}
+        />
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <SettingsModal
+          user={user}
+          settings={settings}
+          appData={appData}
+          onUpdateSettings={handleUpdateSettings}
+          onClose={() => setShowSettingsModal(false)}
+          onOpenFirebaseGuide={() => {
+            setShowSettingsModal(false);
+            setShowFirebaseGuide(true);
+          }}
+          onOpenFirebaseConfig={() => {
+            setShowSettingsModal(false);
+            setShowFirebaseConfig(true);
+          }}
+        />
+      )}
+
+      {/* Firebase Guide Modal */}
+      {showFirebaseGuide && (
+        <FirebaseGuideModal onClose={() => setShowFirebaseGuide(false)} />
+      )}
+
+      {/* Firebase Config Modal */}
+      {showFirebaseConfig && (
+        <FirebaseConfigModal onClose={() => setShowFirebaseConfig(false)} />
+      )}
+    </div>
+  );
+};
+
+export default App;
+</file>
+
+<file path="src/index.css">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #faf5f5;
+  color: #2e282a;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  touch-action: manipulation;
+}
+
+/* iOS Safe Area Utilities */
+.pt-safe {
+  padding-top: max(16px, env(safe-area-inset-top));
+}
+
+.pb-safe {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.pb-safe-nav {
+  padding-bottom: calc(72px + max(12px, env(safe-area-inset-bottom)));
+}
+
+/* Custom delicate scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 67, 105, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 67, 105, 0.4);
+}
+</file>
+
+<file path="src/main.tsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path=".env.example">
+# Firebase Web App Config
+# Скопируйте этот файл в .env и вставьте ваши ключи из Firebase Console (Project Settings -> Web App)
+# Также эти ключи можно ввести прямо в интерфейсе приложения в Настройках!
+
+VITE_FIREBASE_API_KEY=AIzaSyC2yUcp0qaDNR_lCcEFuQ5ZRkqhEu0x3vU
+VITE_FIREBASE_AUTH_DOMAIN=eva-calendar-201f1.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=eva-calendar-201f1
+VITE_FIREBASE_STORAGE_BUCKET=eva-calendar-201f1.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=185015114797
+VITE_FIREBASE_APP_ID=1:185015114797:web:b7ed24111aedcec4b72ca4
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.production
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path=".oxlintrc.json">
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+</file>
+
+<file path="firestore.rules">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Безопасность 100%: доступ к данным разрешен ТОЛЬКО авторизованному пользователю с этим uid.
+    // Никакие другие пользователи или внешние запросы не смогут прочитать или изменить чужие записи.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Ева Цикл" />
+    <meta name="theme-color" content="#FFF5F6" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Ева — Календарь цикла</title>
+  </head>
+  <body class="bg-[#FAF5F5] text-slate-800 antialiased selection:bg-blush-200 selection:text-blush-800">
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="package.json">
+{
+  "name": "calendar",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "firebase": "^13.3.0",
+    "lucide-react": "^1.72.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.2",
+    "gh-pages": "^6.3.0",
+    "oxlint": "^1.90.0",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6"
+  }
+}
+</file>
+
+<file path="postcss.config.js">
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+</file>
+
+<file path="README.md">
+# 🌸 Ева — Календарь женского цикла
+
+Уютное, приватное и красивое веб-приложение для отслеживания менструального цикла, созданное специально для мобильных устройств (в частности, iPhone в режиме PWA) с надежным облачным хранением в **Google Firebase** и возможностью публикации на **GitHub Pages**.
+
+---
+
+## ✨ Возможности приложения
+
+- **💌 Послание дня (комплимент, предсказание и совет по заботе)**:
+  - При каждом открытии приложение встречает нежным и вдохновляющим комплиментом, позитивным предсказанием на день и подсказкой по уходу за собой.
+  - Кнопка «Ещё» с праздничной анимацией лепестков/конфетти позволяет вытянуть новую карту дня в любой момент.
+- **⭕ Главный экран и фазы цикла**:
+  - Круговой индикатор текущего дня цикла.
+  - Определение текущей фазы: *Менструация*, *Фолликулярная фаза*, *День овуляции / Окно фертильности*, *Лютеиновая фаза (ПМС)*.
+  - Обратный отсчет до следующих месячных или счетчик задержки.
+  - Вероятность наступления беременности (низкая / средняя / высокая / пик овуляции).
+  - Быстрая кнопка «Отметить месячные» / «Завершить месячные».
+- **📅 Интерактивный календарь**:
+  - Месячный обзор с цветовыми индикаторами:
+    - 🔴 Дни месячных (насыщенный коралловый цвет).
+    - 🌸 Прогноз следующих месячных (пунктирный контур).
+    - 💜 День овуляции (лавандовый оттенок со звёздочкой).
+    - 🌿 Окно фертильности (нежно-мятный цвет).
+    - 🟡 Точка заметок и симптомов.
+  - Нажатие на любой день открывает карточку подробной записи.
+- **📝 Детальный трекинг дня**:
+  - Интенсивность выделений: *Нет, Капли (мажущие), Легкие, Средние, Обильные*.
+  - Симптомы: *Спазмы, Головная боль, Чувствительность груди, Вздутие, Усталость, Боль в пояснице, Высыпания, Тяга к сладкому, Тошнота, Бессонница*.
+  - Настроение: *Радостное, Спокойное, Романтичное, Энергичное, Ранимое, Раздраженное, Тревожное, Грустное*.
+  - Сексуальная активность: *Без защиты, С защитой, Высокое либидо, Не было*.
+  - Текстовые заметки на любой день.
+- **📊 История и статистика**:
+  - Средняя длина цикла и средняя длительность месячных, рассчитанные на основе реальной истории.
+  - Список всех прошедших циклов с возможностью редактирования и удаления.
+  - Ручное добавление прошедших циклов.
+- **🔒 Безопасность и надежность**:
+  - Авторизация через **Google в 1 клик** (Firebase Auth).
+  - Данные хранятся в облаке **Google Cloud Firestore** — при поломке, утере или смене телефона данные никогда не пропадут.
+  - **100% приватность**: строгие правила `firestore.rules` разрешают доступ к данным **только владельцу учетной записи** (`request.auth.uid == userId`).
+  - **Резервная копия**: кнопка «Скачать копию (.json)» для моментального сохранения всей базы в файл и возможность восстановления в один клик.
+- **📱 Оптимизация для iPhone (PWA)**:
+  - Поддержка Dynamic Island, чёлки и домашней полоски iOS (`env(safe-area-inset-*)`).
+  - Установка на домашний экран Safari как отдельное нативное приложение без адресной строки.
+
+---
+
+## 🚀 Быстрый старт локально
+
+1. Установите зависимости (если еще не установлены):
+   ```bash
+   npm install
+   ```
+2. Запустите локальный сервер разработки:
+   ```bash
+   npm run dev
+   ```
+3. Откройте в браузере адрес, указанный в терминале (обычно `http://localhost:5173`).
+
+---
+
+## 🛠️ Пошаговый гайд по Firebase (Бесплатный план)
+
+Для того чтобы приложение надежно хранило данные в облаке Google:
+
+### Шаг 1: Создание проекта
+1. Перейдите в [Firebase Console](https://console.firebase.google.com/) и войдите под своим Google-аккаунтом.
+2. Нажмите **«Add project»** (Создать проект).
+3. Введите название, например `eva-calendar`, и нажмите **Continue**.
+4. Google Analytics можно отключить (снять галочку) и нажать **Create project**.
+
+### Шаг 2: Включение входа через Google
+1. В левом боковом меню перейдите в **Build** → **Authentication** → нажмите **Get started**.
+2. Во вкладке **Sign-in method** выберите **Google**.
+3. Переведите переключатель в положение **Enable**.
+4. Укажите свой email в поле «Project support email» и нажмите **Save**.
+
+### Шаг 3: Создание базы данных Cloud Firestore
+1. В меню слева перейдите в **Build** → **Firestore Database** → нажмите **Create database**.
+2. Выберите регион (например, `europe-west3` или `us-central1`).
+3. Выберите режим **Start in test mode** или **production** (правила мы сейчас заменим) и нажмите **Create**.
+
+### Шаг 4: Настройка строгой защиты (Rules)
+В открывшейся базе Firestore перейдите во вкладку **Rules** (Правила), удалите всё содержимое и вставьте следующий код:
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Доступ к данным имеет ТОЛЬКО владелец учетной записи (ваша жена)
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+Нажмите **Publish** (Опубликовать). Теперь никто, кроме авторизованного пользователя, не сможет прочитать или изменить её данные.
+
+### Шаг 5: Получение ключей приложения
+1. Нажмите на значок шестерёнки вверху слева ⚙️ → **Project settings**.
+2. Прокрутите вниз до раздела **Your apps** и нажмите на круглую иконку веба `</>` (**Web**).
+3. Введите имя приложения (например, `Eva Web`) и нажмите **Register app**.
+4. Скопируйте объект конфигурации `firebaseConfig`. Вы можете:
+   - Либо создать файл `.env` на основе `.env.example` и вставить значения туда.
+   - Либо просто открыть приложение на телефоне, зайти в **Настройки** → **Ключи API** и вставить скопированный текст прямо туда!
+
+### Шаг 6: Добавление домена GitHub Pages в Firebase
+Чтобы Google разрешил авторизацию с вашего сайта на GitHub Pages:
+1. В Firebase Console откройте **Build** → **Authentication** → вкладка **Settings** (Настройки).
+2. Выберите **Authorized domains** (Авторизованные домены).
+3. Нажмите **Add domain** и введите ваш домен GitHub Pages (например, `username.github.io`).
+
+---
+
+## 🌐 Выгрузка на GitHub Pages
+
+### Вариант 1 (Автоматический через GitHub Actions — Рекомендуемый):
+В репозитории уже настроен файл `.github/workflows/deploy.yml`. 
+1. Создайте новый репозиторий на GitHub (например, `calendar`).
+2. Привяжите локальный проект и отправьте код:
+   ```bash
+   git add .
+   git commit -m "Initial commit of Eva Cycle Calendar"
+   git remote add origin https://github.com/ВАШ_ЛОГИН/calendar.git
+   git branch -M main
+   git push -u origin main
+   ```
+3. В настройках вашего репозитория на GitHub перейдите в **Settings** → **Pages** → в поле **Source** выберите **GitHub Actions**.
+4. Всё! GitHub автоматически соберет и опубликует сайт по адресу: `https://ВАШ_ЛОГИН.github.io/calendar/`.
+
+### Вариант 2 (Через команду deploy):
+1. В `package.json` добавьте поле `"homepage": "https://ВАШ_ЛОГИН.github.io/calendar"`.
+2. Запустите:
+   ```bash
+   npm run deploy
+   ```
+
+---
+
+## 📱 Установка на iPhone жены (как нативное приложение)
+
+1. Откройте ссылку на сайт (например, `https://ВАШ_ЛОГИН.github.io/calendar/`) в браузере **Safari** на iPhone.
+2. Внизу экрана нажмите кнопку **«Поделиться»** (квадрат со стрелкой вверх).
+3. Прокрутите меню вниз и выберите **«На экран „Домой“»** (Add to Home Screen).
+4. Нажмите **«Добавить»** в верхнем правом углу.
+5. На рабочем столе появится красивая иконка с цветком лотоса. При запуске приложение откроется на весь экран без адресной строки Safari, как настоящее нативное iOS-приложение.
+6. Нажмите кнопку входа и войдите через Google один раз. Сессия сохранится!
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        blush: {
+          50: '#fff5f6',
+          100: '#ffe8eb',
+          200: '#ffd6dc',
+          300: '#ffb3bf',
+          400: '#ff7e95',
+          500: '#f44369',
+          600: '#e1214c',
+          700: '#bd133a',
+          800: '#9d1334',
+          900: '#841530',
+        },
+        rosewood: {
+          50: '#fdf8f7',
+          100: '#f9f0ee',
+          200: '#f3e1dc',
+          300: '#e8c9c1',
+          400: '#d7a69b',
+          500: '#c58476',
+          600: '#b06757',
+          700: '#935244',
+          800: '#7a453a',
+          900: '#673d34',
+        },
+        peach: {
+          50: '#fff9f5',
+          100: '#ffefe6',
+          200: '#ffdcc9',
+          300: '#ffc1a1',
+          400: '#ff9b6d',
+          500: '#f7733b',
+          600: '#e85420',
+        },
+        sage: {
+          50: '#f4f8f5',
+          100: '#e6f0e8',
+          200: '#cfdfd3',
+          300: '#aac5b1',
+          400: '#7fa488',
+          500: '#5e8668',
+        },
+        lavender: {
+          50: '#faf7fd',
+          100: '#f3ecfa',
+          200: '#e9dcf5',
+          300: '#d7beed',
+          400: '#bd96e1',
+          500: '#a36fd3',
+        }
+      },
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        'soft': '0 4px 20px -2px rgba(244, 67, 105, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+        'soft-lg': '0 10px 30px -4px rgba(244, 67, 105, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.05)',
+        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.03)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.25s ease-out',
+        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'pulse-subtle': 'pulseSubtle 3s infinite ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.85', transform: 'scale(0.99)' },
+        }
+      }
+    },
+  },
+  plugins: [],
+}
+</file>
+
+<file path="tsconfig.app.json">
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}
+</file>
+
+<file path="tsconfig.json">
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+</file>
+
+<file path="tsconfig.node.json">
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "module": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts"]
+}
+</file>
+
+<file path="vite.config.ts">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  base: './', // Relative base for GitHub Pages compatibility
+})
+</file>
+
+</files>

@@ -89,19 +89,18 @@ export function computeCycleStats(
   const today = startOfDay(referenceDate);
 
   if (!cycles || cycles.length === 0) {
-    const nextDate = addDays(today, 14);
-    const ovDate = addDays(today, 0);
     return {
-      currentCycleDay: 14,
-      currentPhase: 'ovulation',
-      phaseTitle: 'Овуляция',
-      phaseDescription: 'Пик фертильности и энергии. Отметь первый день цикла, чтобы настроить календарь.',
-      daysUntilNextPeriod: 14,
-      nextPeriodDate: formatDateKey(nextDate),
-      ovulationDate: formatDateKey(ovDate),
-      fertileWindowStart: formatDateKey(subDays(ovDate, 4)),
-      fertileWindowEnd: formatDateKey(addDays(ovDate, 1)),
-      pregnancyChance: 'Пик овуляции',
+      hasData: false,
+      currentCycleDay: 0,
+      currentPhase: 'follicular',
+      phaseTitle: 'Нет данных',
+      phaseDescription: 'Нажми «Отметить месячные» ниже или добавь дату начала цикла в истории.',
+      daysUntilNextPeriod: 0,
+      nextPeriodDate: '',
+      ovulationDate: '',
+      fertileWindowStart: '',
+      fertileWindowEnd: '',
+      pregnancyChance: 'Низкая',
       avgCycleLength,
       avgPeriodLength,
       isDelay: false,
@@ -167,6 +166,7 @@ export function computeCycleStats(
   }
 
   return {
+    hasData: true,
     currentCycleDay,
     currentPhase,
     phaseTitle,
@@ -194,8 +194,10 @@ export function getCalendarDayInfo(
   const log = dayLogs[dateKey];
   const dayStart = startOfDay(date);
 
-  let isPeriod = log?.isPeriod || false;
-  if (!isPeriod) {
+  let isPeriod = false;
+  if (log && typeof log.isPeriod === 'boolean') {
+    isPeriod = log.isPeriod;
+  } else {
     for (const c of cycles) {
       const cStart = startOfDay(parseISO(c.startDate));
       const cEnd = c.endDate
@@ -208,6 +210,10 @@ export function getCalendarDayInfo(
         break;
       }
     }
+  }
+
+  if (log?.isPeriod === false) {
+    isPeriod = false;
   }
 
   let isPredictedPeriod = false;
@@ -228,16 +234,29 @@ export function getCalendarDayInfo(
     }
   }
 
-  const isOvulation = stats.ovulationDate === dateKey;
+  let isOvulation = false;
+  if (stats.ovulationDate) {
+    const currentOv = parseISO(stats.ovulationDate);
+    const nextOv = addDays(currentOv, stats.avgCycleLength);
+    isOvulation = stats.ovulationDate === dateKey || formatDateKey(nextOv) === dateKey;
+  }
   
   let isFertile = false;
   if (stats.fertileWindowStart && stats.fertileWindowEnd) {
     const fStart = startOfDay(parseISO(stats.fertileWindowStart));
     const fEnd = startOfDay(parseISO(stats.fertileWindowEnd));
-    if ((isSameDay(dayStart, fStart) || isAfter(dayStart, fStart)) &&
-        (isSameDay(dayStart, fEnd) || isBefore(dayStart, fEnd))) {
-      isFertile = true;
-    }
+    const nextFStart = addDays(fStart, stats.avgCycleLength);
+    const nextFEnd = addDays(fEnd, stats.avgCycleLength);
+
+    const isCurrentFertile =
+      (isSameDay(dayStart, fStart) || isAfter(dayStart, fStart)) &&
+      (isSameDay(dayStart, fEnd) || isBefore(dayStart, fEnd));
+
+    const isNextFertile =
+      (isSameDay(dayStart, nextFStart) || isAfter(dayStart, nextFStart)) &&
+      (isSameDay(dayStart, nextFEnd) || isBefore(dayStart, nextFEnd));
+
+    isFertile = isCurrentFertile || isNextFertile;
   }
 
   const hasNotes = Boolean(log?.notes && log.notes.trim().length > 0);

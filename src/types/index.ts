@@ -59,6 +59,7 @@ export type CyclePhase =
   | 'luteal'; // Лютеиновая фаза (ПМС)
 
 export interface CycleStats {
+  hasData: boolean;
   currentCycleDay: number;
   currentPhase: CyclePhase;
   phaseTitle: string;

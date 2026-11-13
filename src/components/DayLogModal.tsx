@@ -57,8 +57,6 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
   onSave,
   onDelete
 }) => {
-  if (!dateStr) return null;
-
   const [isPeriod, setIsPeriod] = useState<boolean>(initialLog?.isPeriod || false);
   const [flow, setFlow] = useState<FlowIntensity>(initialLog?.flowIntensity || 'none');
   const [symptoms, setSymptoms] = useState<SymptomType[]>(initialLog?.symptoms || []);
@@ -68,6 +66,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    if (!dateStr) return;
     setIsPeriod(initialLog?.isPeriod || false);
     setFlow(initialLog?.flowIntensity || (initialLog?.isPeriod ? 'medium' : 'none'));
     setSymptoms(initialLog?.symptoms || []);
@@ -75,6 +74,8 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
     setSex(initialLog?.sexActivity || 'none');
     setNotes(initialLog?.notes || '');
   }, [initialLog, dateStr]);
+
+  if (!dateStr) return null;
 
   const toggleSymptom = (sym: SymptomType) => {
     setSymptoms((prev) =>
@@ -125,7 +126,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
       <div className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-blush-100">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blush-50/50 to-white">
           <div>
@@ -160,7 +161,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
                   onClick={() => handleFlowSelect(item.id)}
                   className={`py-2 px-1 rounded-xl text-xs font-medium flex flex-col items-center justify-center transition-all ${
                     flow === item.id
-                      ? 'bg-blush-500 text-white shadow-xs'
+                      ? 'bg-blush-500 text-white shadow-sm'
                       : 'bg-white text-slate-600 border border-slate-200/80 hover:border-blush-300'
                   }`}
                 >
@@ -187,7 +188,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
                     onClick={() => toggleSymptom(sym.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
                       active
-                        ? 'bg-blush-500 text-white shadow-xs'
+                        ? 'bg-blush-500 text-white shadow-sm'
                         : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-blush-50'
                     }`}
                   >
@@ -213,7 +214,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
                     onClick={() => toggleMood(m.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
                       active
-                        ? 'bg-peach-500 text-white shadow-xs'
+                        ? 'bg-peach-500 text-white shadow-sm'
                         : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-peach-50'
                     }`}
                   >
@@ -237,7 +238,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
                   onClick={() => setSex(item.id)}
                   className={`py-2 px-2 rounded-xl text-xs font-medium flex items-center justify-center space-x-1.5 transition-all ${
                     sex === item.id
-                      ? 'bg-rosewood-600 text-white shadow-xs'
+                      ? 'bg-rosewood-600 text-white shadow-sm'
                       : 'bg-slate-50 text-slate-700 border border-slate-200/70 hover:bg-rosewood-50'
                   }`}
                 >
@@ -277,7 +278,7 @@ export const DayLogModal: React.FC<DayLogModalProps> = ({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-blush-500 to-blush-600 text-white font-semibold text-sm shadow-soft hover:brightness-105 active:scale-98 transition-all flex items-center justify-center space-x-2"
+            className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-blush-500 to-blush-600 text-white font-semibold text-sm shadow-soft hover:brightness-105 active:scale-95 transition-all flex items-center justify-center space-x-2"
           >
             <Check className="w-4 h-4" />
             <span>{isSaving ? 'Сохранение...' : 'Сохранить'}</span>

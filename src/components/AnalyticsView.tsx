@@ -44,6 +44,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     setNewEndDate('');
   };
 
+  const todayStr = new Date().toISOString().slice(0, 10);
+
   return (
     <div className="space-y-4 max-w-md mx-auto">
       <div className="grid grid-cols-2 gap-3">
@@ -114,10 +116,25 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       ) : (
         <div className="space-y-2.5">
           {sortedCycles.map((cycle, idx) => {
+            const computedCycleLength =
+              cycle.cycleLength ||
+              (idx > 0
+                ? Math.round(
+                    (new Date(sortedCycles[idx - 1].startDate).getTime() -
+                      new Date(cycle.startDate).getTime()) /
+                      86400000
+                  )
+                : undefined);
+
+            const showCycleLength =
+              computedCycleLength !== undefined &&
+              computedCycleLength >= 15 &&
+              computedCycleLength <= 60;
+
             return (
               <div
                 key={cycle.id}
-                className="bg-white rounded-2xl p-4 border border-blush-100/80 shadow-xs flex items-center justify-between hover:border-blush-200 transition-all"
+                className="bg-white rounded-2xl p-4 border border-blush-100/80 shadow-sm flex items-center justify-between hover:border-blush-200 transition-all"
               >
                 <div>
                   <div className="flex items-center space-x-2">
@@ -141,8 +158,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                     {cycle.durationDays && (
                       <span>• {cycle.durationDays} дн. выделений</span>
                     )}
-                    {cycle.cycleLength && (
-                      <span>• Цикл {cycle.cycleLength} дн.</span>
+                    {showCycleLength && (
+                      <span>• Цикл {computedCycleLength} дн.</span>
                     )}
                   </div>
                 </div>
@@ -173,7 +190,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
           <div className="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-blush-100">
             <h3 className="text-base font-bold text-slate-800 mb-3">
               Добавить цикл вручную
@@ -187,6 +204,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <input
                   type="date"
                   required
+                  max={todayStr}
                   value={newStartDate}
                   onChange={(e) => setNewStartDate(e.target.value)}
                   className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blush-400"
@@ -201,6 +219,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   type="date"
                   value={newEndDate}
                   min={newStartDate}
+                  max={todayStr}
                   onChange={(e) => setNewEndDate(e.target.value)}
                   className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blush-400"
                 />

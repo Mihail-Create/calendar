@@ -164,7 +164,7 @@ export function loadLocalGuestData(): AppData {
     const dayLogs = JSON.parse(localStorage.getItem(LOCAL_LOGS_KEY) || '{}');
     const settings = JSON.parse(localStorage.getItem(LOCAL_SETTINGS_KEY) || JSON.stringify(DEFAULT_SETTINGS));
     return { cycles, dayLogs, settings };
-  } catch (err) {
+  } catch {
     return { cycles: [], dayLogs: {}, settings: DEFAULT_SETTINGS };
   }
 }
@@ -213,22 +213,38 @@ export async function importDataFromJSON(
     const settings = incomingData.settings || DEFAULT_SETTINGS;
 
     if (userId && db) {
-      const batch = writeBatch(db);
+      const ops: { ref: ReturnType<typeof doc>; data: unknown }[] = [];
 
       for (const c of cycles) {
-        const cRef = doc(db, 'users', userId, 'cycles', c.id);
-        batch.set(cRef, c, { merge: true });
+        if (!c || !c.id) continue;
+        ops.push({
+          ref: doc(db, 'users', userId, 'cycles', c.id),
+          data: c
+        });
       }
 
       for (const [dateKey, log] of Object.entries(logs)) {
-        const lRef = doc(db, 'users', userId, 'logs', dateKey);
-        batch.set(lRef, log, { merge: true });
+        if (!dateKey || !log) continue;
+        ops.push({
+          ref: doc(db, 'users', userId, 'logs', dateKey),
+          data: log
+        });
       }
 
-      const sRef = doc(db, 'users', userId, 'profile', 'settings');
-      batch.set(sRef, settings, { merge: true });
+      ops.push({
+        ref: doc(db, 'users', userId, 'profile', 'settings'),
+        data: settings
+      });
 
-      await batch.commit();
+      const CHUNK_SIZE = 400;
+      for (let i = 0; i < ops.length; i += CHUNK_SIZE) {
+        const chunk = ops.slice(i, i + CHUNK_SIZE);
+        const batch = writeBatch(db);
+        for (const op of chunk) {
+          batch.set(op.ref, op.data as Record<string, unknown>, { merge: true });
+        }
+        await batch.commit();
+      }
     } else {
       saveLocalGuestData({ cycles, dayLogs: logs, settings });
     }
@@ -238,11 +254,69 @@ export async function importDataFromJSON(
       message: 'Данные успешно восстановлены!',
       count: cycles.length + Object.keys(logs).length
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : 'Ошибка импорта файла';
     return {
       success: false,
-      message: err.message || 'Ошибка импорта файла',
+      message: errorMsg,
       count: 0
     };
+  }
+}
+
+export async function migrateGuestDataToCloud(userId: string): Promise<boolean> {
+  if (!userId || !db) return false;
+  try {
+    const guestData = loadLocalGuestData();
+    const hasCycles = guestData.cycles && guestData.cycles.length > 0;
+    const hasLogs = guestData.dayLogs && Object.keys(guestData.dayLogs).length > 0;
+
+    if (!hasCycles && !hasLogs) {
+      return false;
+    }
+
+    const ops: { ref: ReturnType<typeof doc>; data: unknown }[] = [];
+
+    for (const c of guestData.cycles) {
+      if (!c || !c.id) continue;
+      ops.push({
+        ref: doc(db, 'users', userId, 'cycles', c.id),
+        data: c
+      });
+    }
+
+    for (const [dateKey, log] of Object.entries(guestData.dayLogs)) {
+      if (!dateKey || !log) continue;
+      ops.push({
+        ref: doc(db, 'users', userId, 'logs', dateKey),
+        data: log
+      });
+    }
+
+    if (guestData.settings) {
+      ops.push({
+        ref: doc(db, 'users', userId, 'profile', 'settings'),
+        data: guestData.settings
+      });
+    }
+
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < ops.length; i += CHUNK_SIZE) {
+      const chunk = ops.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      for (const op of chunk) {
+        batch.set(op.ref, op.data as Record<string, unknown>, { merge: true });
+      }
+      await batch.commit();
+    }
+
+    localStorage.removeItem(LOCAL_CYCLES_KEY);
+    localStorage.removeItem(LOCAL_LOGS_KEY);
+    localStorage.removeItem(LOCAL_SETTINGS_KEY);
+
+    return true;
+  } catch (err) {
+    console.error('Error migrating guest data to cloud:', err);
+    return false;
   }
 }
